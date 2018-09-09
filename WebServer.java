@@ -1,8 +1,8 @@
 import java.net.*;
 import java.io.*;
 
-import Request.*;
-// import responseFactory.*;
+import Resource.*;
+// import Response.*;
 
 class WebServer {
 
