@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 public class MimeTypes implements Config {
 
   private String config;
-  private HashMap<String, String> mimeTypeMap = new HashMap<String, String>();
+  private HashMap<String, String> mimeTypeMap;
   private BufferedReader bufferReader;
   private FileReader fileReader;
   private StringTokenizer token;
@@ -20,6 +20,7 @@ public class MimeTypes implements Config {
 
   public MimeTypes(String filePath) {
     this.config = filePath;
+    this.mimeTypeMap = new HashMap<String, String>();
     this.load();
   }
 
