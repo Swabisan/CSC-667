@@ -14,7 +14,7 @@ public class MimeTypes implements Config {
   private BufferedReader bufferReader;
   private FileReader fileReader;
   private StringTokenizer token;
-  private String sCurrentLine;
+  private String currentLine;
   private String key;
   private String value;
 
@@ -29,8 +29,8 @@ public class MimeTypes implements Config {
       this.fileReader   = new FileReader(config);
       this.bufferReader = new BufferedReader(fileReader);
 
-      while((sCurrentLine = this.bufferReader.readLine()) != null) {
-        this.token = new StringTokenizer(sCurrentLine);
+      while((currentLine = this.bufferReader.readLine()) != null) {
+        this.token = new StringTokenizer(currentLine);
 
         if(this.token.countTokens() > 1) {
           this.value = this.token.nextToken();
