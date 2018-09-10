@@ -46,7 +46,7 @@ public class MimeTypes implements Config {
     }
   }
 
-  public String lookUp(String mimeType) {
+  public String lookUp(String mimeType, String type) {
     return mimeTypeMap.get(mimeType);
   }
 }
