@@ -47,6 +47,16 @@ public class MimeTypes implements Config {
   }
 
   public String lookUp(String mimeType, String type) {
+    String defaultMimeType = "text/text";
+
+    if(type != "MIME_TYPE") {
+      throw new IllegalArgumentException("Lookup type parameter must be 'MIME_TYPE'");
+    }
+
+    if(mimeTypeMap.get(mimeType) == null) {
+      return defaultMimeType;
+    }
+
     return mimeTypeMap.get(mimeType);
   }
 }
