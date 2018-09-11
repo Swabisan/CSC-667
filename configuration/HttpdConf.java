@@ -23,7 +23,7 @@ class HttpdConf implements Config {
 
   public HttpdConf(String filePath) {
     this.config = filePath;
-	  this.httpdMap = new HashMap<String,String>();
+    this.httpdMap = new HashMap<String,String>();
     this.aliasMap = new HashMap<String,String>();
     this.scriptAliasMap = new HashMap<String,String>();
     this.load();
