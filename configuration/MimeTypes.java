@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 public class MimeTypes implements Config {
 
   private String config;
-  private HashMap<String, String> mimeTypeMap;
+  private HashMap<String,String> mimeTypeMap;
   private BufferedReader bufferReader;
   private FileReader fileReader;
   private StringTokenizer token;
