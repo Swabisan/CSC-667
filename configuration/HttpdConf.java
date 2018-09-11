@@ -81,9 +81,10 @@ class HttpdConf implements Config {
     if(configType.equalsIgnoreCase("ALIAS")) {
       return aliasValue;
     }
-    if(configType.equalsIgnoreCase("HTTPD_VALUE")) {
+    if(configType.equalsIgnoreCase("HTTPD_CONF")) {
       return httpdValue;
     }
+    
     return null;
   }
 }
