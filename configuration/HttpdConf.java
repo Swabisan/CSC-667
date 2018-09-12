@@ -84,7 +84,7 @@ class HttpdConf implements Config {
     if(configType.equalsIgnoreCase("HTTPD_CONF")) {
       return httpdValue;
     }
-    
+
     return null;
   }
 }
