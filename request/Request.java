@@ -1,4 +1,4 @@
-package Resource;
+package request;
 
 import java.util.*;
 import java.net.*;
@@ -9,17 +9,15 @@ public class Request {
   String method;
   String identifier;
   String version;
-  HashMap<String, String> headers;
+  HashMap<String, String> headers = new HashMap<String, String>();
   // - body : ?
 
   public Request(Socket client) throws IOException {
     parseHttpRequest(client);
   }
 
-  // TODO make less shitty
   private void parseHttpRequest(Socket client) throws IOException {
-    headers = new HashMap();
-    String line;
+    String currentLine = null;
     int lineNo = 0;
 
     BufferedReader reader = new BufferedReader(
@@ -27,39 +25,61 @@ public class Request {
     );
 
     while(true) {
-      line = reader.readLine();
-      System.out.println( "> " + line );
+      currentLine = reader.readLine();
+      System.out.println( "> " + currentLine );
 
-      // determines when to end
-      if (line == null || line.isEmpty()) {
+      if (isStringEmpty(currentLine)) {
         break;
       }
 
       lineNo++;
 
       if (lineNo == 1) {
-        setFirstLine(line);
+        if (!addFirstLine(currentLine)){
+          returnBadRequest();
+          break;
+        }
       }
       if (lineNo > 1) {
-        // determines when to end
-        if (!line.isEmpty()) {
-          addHeaders(line);
+        if (!addHeaders(currentLine)){
+          System.out.println("Successfully parsed request!");
+          break;
         }
       }
     }
     printDataFields();
   }
 
-  private void addHeaders(String header) {
+  private boolean addHeaders(String header) {
     String[] tokens = header.split(": ");
+    if (tokens.length < 2) {
+      return false;
+    }
     this.headers.put(tokens[0], tokens[1]);
+    return true;
   }
 
-  private void setFirstLine(String firstLine) {
+  private boolean addFirstLine(String firstLine) {
     String[] tokens = firstLine.split(" ");
+    if (tokens.length < 3) {
+      return false;
+    }
     this.method     = tokens[0];
     this.identifier = tokens[1];
     this.version    = tokens[2];
+    return true;
+  }
+
+  private boolean isStringEmpty(String str) {
+    if (str == null) {
+      return true;
+    }
+
+    if (str == "") {
+      return true;
+    }
+
+    return false;
   }
 
   private void printDataFields() {
@@ -67,9 +87,14 @@ public class Request {
     System.out.println("Identifier: " + this.identifier);
     System.out.println("Version: "    + this.version);
     System.out.println("Headers");
+
     for(Map.Entry<String, String> entry : headers.entrySet()) {
       System.out.println(entry.getKey() + ": " + entry.getValue());
     }
+  }
+
+  private void returnBadRequest() {
+    System.out.println("400 Bad request");
   }
 
   public String getMethod() {
