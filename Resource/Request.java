@@ -18,7 +18,7 @@ public class Request {
 
   // TODO make less shitty
   private void parseHttpRequest(Socket client) throws IOException {
-    headers = new HashMap();
+    headers = new HashMap<String,String>();
     String line;
     int lineNo = 0;
 
