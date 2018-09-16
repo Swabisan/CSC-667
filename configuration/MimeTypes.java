@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class MimeTypes implements Config {
+public class MimeTypes extends Config {
 
   private String config;
   private HashMap<String,String> mimeTypeMap;
