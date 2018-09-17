@@ -1,4 +1,5 @@
-package Resource;
+
+package resource;
 
 import configuration.*;
 

@@ -1,34 +1,44 @@
 import java.net.*;
 import java.io.*;
 
-import Resource.*;
-// import Response.*;
+import configuration.*;
+import request.*;
+import resource.*;
+import response.*;
 
 class WebServer {
 
-  static ServerSocket serverSocket;
+  private static ServerSocket serverSocket;
+  private static Config HTTPD_CONF;
+  private static Config MIME_TYPE;
   // Dictionary accessFiles;
-  // MimeTypes mimeTypes;
-  // HttpdConf configuration;
-
-  // TODO get port from httpd.conf
-  static final private int DEFAULT_PORT = 8096;
+  private static int port;
 
   public static void main(String[] args) throws IOException {
+    loadConfiguration();
     start();
   }
 
-  protected static void start() throws IOException {
-    bindServerSocket(DEFAULT_PORT);
+  private static void start() throws IOException {
+    bindServerSocket();
     listenForClient();
   }
 
-  protected static void bindServerSocket(int port) throws IOException {
+  private static void loadConfiguration() {
+    ConfigurationReader configReader = new ConfigurationReader();
+
+    HTTPD_CONF = configReader.getConfig("HTTPD_CONF");
+    MIME_TYPE = configReader.getConfig("MIME_TYPE");
+
+    port = Integer.parseInt(HTTPD_CONF.lookUp("Listen", "HTTPD_CONF"));
+  }
+
+  private static void bindServerSocket() throws IOException {
     serverSocket = new ServerSocket(port);
     System.out.println("Listening on Port: " + serverSocket.getLocalPort());
   }
 
-  protected static void listenForClient() throws IOException {
+  private static void listenForClient() throws IOException {
     Socket clientSocket = null;
 
     while(true) {
