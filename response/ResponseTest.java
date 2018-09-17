@@ -1,4 +1,6 @@
 import java.io.OutputStream;
+import java.net.*;
+import java.io.*;
 
 public class ResponseTest {
 
@@ -6,7 +8,7 @@ public class ResponseTest {
   private String reasonPhrase;
   private Resource resource;
 
-  public ResponseTest(Resource test) {
+  public ResponseTest(Resource resource, Request request) {
     return null;
   }
   public OutputStream response(OutputStream stream) {
