@@ -1,3 +1,4 @@
 /conf
 /logs
 *.class
+*.DS_Store

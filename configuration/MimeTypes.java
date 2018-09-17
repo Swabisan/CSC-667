@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class MimeTypes implements Config {
+public class MimeTypes extends Config {
 
   private String config;
   private HashMap<String,String> mimeTypeMap;
@@ -47,6 +47,16 @@ public class MimeTypes implements Config {
   }
 
   public String lookUp(String mimeType, String type) {
+    String defaultMimeType = "text/text";
+
+    if(type != "MIME_TYPE") {
+      throw new IllegalArgumentException("Lookup type parameter must be 'MIME_TYPE'");
+    }
+
+    if(mimeTypeMap.get(mimeType) == null) {
+      return defaultMimeType;
+    }
+
     return mimeTypeMap.get(mimeType);
   }
 }

@@ -4,7 +4,7 @@ import java.io.*;
 import configuration.*;
 import request.*;
 import resource.*;
-// import Response.*;
+import response.*;
 
 class WebServer {
 
@@ -30,7 +30,7 @@ class WebServer {
     HTTPD_CONF = configReader.getConfig("HTTPD_CONF");
     MIME_TYPE = configReader.getConfig("MIME_TYPE");
 
-    port = Integer.parseInt(HTTPD_CONF.lookUp("Listen", "HTTPD_VALUE"));
+    port = Integer.parseInt(HTTPD_CONF.lookUp("Listen", "HTTPD_CONF"));
   }
 
   private static void bindServerSocket() throws IOException {

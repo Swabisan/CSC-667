@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-class HttpdConf implements Config {
+class HttpdConf extends Config {
 
   private String config;
   private HashMap<String,String> httpdMap;
@@ -81,9 +81,10 @@ class HttpdConf implements Config {
     if(configType.equalsIgnoreCase("ALIAS")) {
       return aliasValue;
     }
-    if(configType.equalsIgnoreCase("HTTPD_VALUE")) {
+    if(configType.equalsIgnoreCase("HTTPD_CONF")) {
       return httpdValue;
     }
+
     return null;
   }
 }

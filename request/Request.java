@@ -1,3 +1,4 @@
+
 package request;
 
 import java.util.*;
@@ -9,7 +10,7 @@ public class Request {
   String method;
   String identifier;
   String version;
-  HashMap<String, String> headers = new HashMap<String, String>();
+  HashMap<String, String> headers;
   // - body : ?
 
   public Request(Socket client) throws IOException {
@@ -17,6 +18,7 @@ public class Request {
   }
 
   private void parseHttpRequest(Socket client) throws IOException {
+    headers = new HashMap<String,String>();
     String currentLine = null;
     int lineNo = 0;
 
