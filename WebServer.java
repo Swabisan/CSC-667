@@ -5,14 +5,16 @@ import configuration.*;
 import request.*;
 import resource.*;
 import response.*;
+import accesscheck.*;
 
 class WebServer {
 
   private static ServerSocket serverSocket;
-  private static Config HTTPD_CONF;
-  private static Config MIME_TYPE;
+  private static Config HTTPD_CONF, MIME_TYPE;
   // Dictionary accessFiles;
   private static int port;
+
+  private static ConfigurationReader configReader = new ConfigurationReader();
 
   public static void main(String[] args) throws IOException {
     loadConfiguration();
@@ -25,8 +27,6 @@ class WebServer {
   }
 
   private static void loadConfiguration() {
-    ConfigurationReader configReader = new ConfigurationReader();
-
     HTTPD_CONF = configReader.getConfig("HTTPD_CONF");
     MIME_TYPE = configReader.getConfig("MIME_TYPE");
 
@@ -55,10 +55,12 @@ class WebServer {
   }
 
   private static void printConnectionEstablished() {
-    System.out.println("-----------------Connection Established...-----------------");
+    final String HR = "-----------------";
+    System.out.printf("%17s%25s%17s\n", HR, "Connection Established...", HR);
   }
 
   private static void printConnectionClosed() {
-    System.out.println("-----------------    Connection Closed    -----------------");
+    final String HR = "-----------------";
+    System.out.printf("%17s%25s%17s\n", HR, "    Connection Closed    ", HR);
   }
 }
