@@ -11,7 +11,9 @@ public class Request {
   private String identifier = "no identifier received";
   private String version    = "no version received";
   private HashMap<String, String> headers;
-  // - body : ?
+  private String body;
+
+  private BufferedReader bufferReader;
 
   public Request(Socket client) throws IOException {
     headers = new HashMap<String, String>();
@@ -22,19 +24,12 @@ public class Request {
     String currentLine = null;
     int lineNo = 0;
 
-    BufferedReader bufferReader = new BufferedReader(
+    this.bufferReader = new BufferedReader(
       new InputStreamReader(client.getInputStream())
     );
 
-    while(true) {
-      currentLine = bufferReader.readLine();
+    while((currentLine = this.bufferReader.readLine()) != null) {
       System.out.println( "> " + currentLine );
-
-      // TODO might be redudent, same check occurs in addHeaders(String)
-      if (isStringEmpty(currentLine)) {
-        break;
-      }
-
       lineNo++;
 
       if (lineNo == 1) {
@@ -55,11 +50,21 @@ public class Request {
 
   private boolean addHeaders(String header) {
     String[] tokens = header.split(": ");
-    if (tokens.length < 2) {
+
+    if (isNoMoreHeaders(header)) {
       return false;
     }
+    if (tokens.length < 2) {
+      returnBadRequest();
+      return false;
+    }
+    
     this.headers.put(tokens[0], tokens[1]);
     return true;
+  }
+
+  private boolean isNoMoreHeaders(String header) {
+    return header.isEmpty();
   }
 
   private boolean addFirstLine(String firstLine) {
@@ -71,18 +76,6 @@ public class Request {
     this.identifier = tokens[1];
     this.version    = tokens[2];
     return true;
-  }
-
-  private boolean isStringEmpty(String str) {
-    if (str == null) {
-      return true;
-    }
-
-    if (str == "") {
-      return true;
-    }
-
-    return false;
   }
 
   private void printDataFields() {
