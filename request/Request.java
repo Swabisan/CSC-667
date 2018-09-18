@@ -7,29 +7,30 @@ import java.io.*;
 
 public class Request {
 
-  String method;
-  String identifier;
-  String version;
-  HashMap<String, String> headers;
+  private String method     = "no method received";
+  private String identifier = "no identifier received";
+  private String version    = "no version received";
+  private HashMap<String, String> headers;
   // - body : ?
 
   public Request(Socket client) throws IOException {
+    headers = new HashMap<String, String>();
     parseHttpRequest(client);
   }
 
   private void parseHttpRequest(Socket client) throws IOException {
-    headers = new HashMap<String,String>();
     String currentLine = null;
     int lineNo = 0;
 
-    BufferedReader reader = new BufferedReader(
+    BufferedReader bufferReader = new BufferedReader(
       new InputStreamReader(client.getInputStream())
     );
 
     while(true) {
-      currentLine = reader.readLine();
+      currentLine = bufferReader.readLine();
       System.out.println( "> " + currentLine );
 
+      // TODO might be redudent, same check occurs in addHeaders(String)
       if (isStringEmpty(currentLine)) {
         break;
       }
@@ -44,7 +45,7 @@ public class Request {
       }
       if (lineNo > 1) {
         if (!addHeaders(currentLine)){
-          System.out.println("Successfully parsed request!");
+          System.out.println("Successfully parsed request...");
           break;
         }
       }
@@ -85,13 +86,20 @@ public class Request {
   }
 
   private void printDataFields() {
-    System.out.println("Method: "     + this.method);
-    System.out.println("Identifier: " + this.identifier);
-    System.out.println("Version: "    + this.version);
-    System.out.println("Headers");
+    final String CB = ": ";
+    System.out.printf("%-20s%2s%S\n", "Method", CB, this.method);
+    System.out.printf("%-20s%2s%S\n", "Identifier", CB, this.identifier);
+    System.out.printf("%-20s%2s%S\n", "Version", CB, this.version);
+
+    if (headers.isEmpty()) {
+      System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
+    } else {
+      final String HR = "- - - - - - - - - - - - -";
+      System.out.printf("%-25s%9s%25s\n", HR, " Headers ", HR);
+    }
 
     for(Map.Entry<String, String> entry : headers.entrySet()) {
-      System.out.println(entry.getKey() + ": " + entry.getValue());
+      System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
     }
   }
 
@@ -109,5 +117,11 @@ public class Request {
 
   public String getVersion() {
     return this.version;
+  }
+
+  public String getHeader(String key) {
+    String value;
+    value = this.headers.getOrDefault(key, "KEY_NOT_FOUND");
+    return value;
   }
 }
