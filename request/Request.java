@@ -7,29 +7,36 @@ import java.io.*;
 
 public class Request {
 
-  private String method     = "no method received";
-  private String identifier = "no identifier received";
-  private String version    = "no version received";
-  private HashMap<String, String> headers;
-  private String body;
+  String method = "no method received";
+  String identifier = "no method received";
+  String version = "no method received";
+  Socket client;
 
-  private BufferedReader bufferReader;
+  public HashMap<String, String> headers = new HashMap<String,String>();
+  // - body : ?
 
   public Request(Socket client) throws IOException {
-    headers = new HashMap<String, String>();
+    this.client = client;
     parseHttpRequest(client);
   }
 
   private void parseHttpRequest(Socket client) throws IOException {
-    String currentLine = null;
+    //this.headers = new HashMap<String,String>();
+    String currentLine;
     int lineNo = 0;
 
-    this.bufferReader = new BufferedReader(
+    BufferedReader reader = new BufferedReader(
       new InputStreamReader(client.getInputStream())
     );
 
-    while((currentLine = this.bufferReader.readLine()) != null) {
+    // while(true) {
+    while((currentLine = reader.readLine()) != null) {
       System.out.println( "> " + currentLine );
+
+      if (isStringEmpty(currentLine)) {
+        break;
+      }
+
       lineNo++;
 
       if (lineNo == 1) {
@@ -40,31 +47,23 @@ public class Request {
       }
       if (lineNo > 1) {
         if (!addHeaders(currentLine)){
-          System.out.println("Successfully parsed request...");
+          System.out.println("Successfully parsed request!");
+          // System.out.println(headers);
           break;
         }
       }
     }
-    printDataFields();
+  // }
+    //printDataFields();
   }
 
   private boolean addHeaders(String header) {
     String[] tokens = header.split(": ");
-
-    if (isNoMoreHeaders(header)) {
-      return false;
-    }
     if (tokens.length < 2) {
-      returnBadRequest();
       return false;
     }
-    
     this.headers.put(tokens[0], tokens[1]);
     return true;
-  }
-
-  private boolean isNoMoreHeaders(String header) {
-    return header.isEmpty();
   }
 
   private boolean addFirstLine(String firstLine) {
@@ -78,21 +77,22 @@ public class Request {
     return true;
   }
 
-  private void printDataFields() {
-    final String CB = ": ";
-    System.out.printf("%-20s%2s%S\n", "Method", CB, this.method);
-    System.out.printf("%-20s%2s%S\n", "Identifier", CB, this.identifier);
-    System.out.printf("%-20s%2s%S\n", "Version", CB, this.version);
-
-    if (headers.isEmpty()) {
-      System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
-    } else {
-      final String HR = "- - - - - - - - - - - - -";
-      System.out.printf("%-25s%9s%25s\n", HR, " Headers ", HR);
+  private boolean isStringEmpty(String str) {
+    //This can be a 1-liner
+    if (str == null) {
+      return true;
     }
 
+    if (str == "") {
+      return true;
+    }
+
+    return false;
+  }
+
+  private void printDataFields() {
     for(Map.Entry<String, String> entry : headers.entrySet()) {
-      System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+      System.out.println(entry.getKey() + ": " + entry.getValue());
     }
   }
 
@@ -110,11 +110,5 @@ public class Request {
 
   public String getVersion() {
     return this.version;
-  }
-
-  public String getHeader(String key) {
-    String value;
-    value = this.headers.getOrDefault(key, "KEY_NOT_FOUND");
-    return value;
   }
 }
