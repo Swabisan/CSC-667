@@ -43,7 +43,7 @@ class HttpdConf extends Config {
           this.key = this.token.nextToken();
 
           while(this.token.hasMoreTokens()) {
-            this.value = this.token.nextToken();
+            this.value = this.token.nextToken().replaceAll("^\"|\"$", "");
             scriptAliasMap.put(this.key, this.value);
           }
 
@@ -51,13 +51,13 @@ class HttpdConf extends Config {
           this.key = this.token.nextToken();
 
           while(this.token.hasMoreTokens()) {
-            this.value = this.token.nextToken();
+            this.value = this.token.nextToken().replaceAll("^\"|\"$", "");
             aliasMap.put(this.key, this.value);
           }
 
         } else {
           this.key = currentToken;
-          this.value = this.token.nextToken();
+          this.value = this.token.nextToken().replaceAll("^\"|\"$", "");
           httpdMap.put(this.key, this.value);
         }
       }
