@@ -14,10 +14,11 @@ public class Request {
   private String body;
 
   private BufferedReader bufferReader;
+  private boolean badRequest = false;
 
   public Request(Socket client) throws IOException {
     headers = new HashMap<String, String>();
-    parseHttpRequest(client);
+    this.parseHttpRequest(client);
   }
 
   private void parseHttpRequest(Socket client) throws IOException {
@@ -33,14 +34,16 @@ public class Request {
       lineNo++;
 
       if (lineNo == 1) {
-        if (!addFirstLine(currentLine)){
-          returnBadRequest();
+        if (!this.parseFirstLine(currentLine)){
+          flagBadRequest();
           break;
         }
       }
       if (lineNo > 1) {
-        if (!addHeaders(currentLine)){
-          System.out.println("Successfully parsed request...");
+        if (!this.parseHeaders(currentLine)){
+          if (!this.parseBody()) {
+            flagBadRequest();
+          }
           break;
         }
       }
@@ -48,26 +51,7 @@ public class Request {
     printDataFields();
   }
 
-  private boolean addHeaders(String header) {
-    String[] tokens = header.split(": ");
-
-    if (isNoMoreHeaders(header)) {
-      return false;
-    }
-    if (tokens.length < 2) {
-      returnBadRequest();
-      return false;
-    }
-    
-    this.headers.put(tokens[0], tokens[1]);
-    return true;
-  }
-
-  private boolean isNoMoreHeaders(String header) {
-    return header.isEmpty();
-  }
-
-  private boolean addFirstLine(String firstLine) {
+  private boolean parseFirstLine(String firstLine) {
     String[] tokens = firstLine.split(" ");
     if (tokens.length < 3) {
       return false;
@@ -76,6 +60,37 @@ public class Request {
     this.identifier = tokens[1];
     this.version    = tokens[2];
     return true;
+  }
+
+  private boolean parseHeaders(String header) {
+    String[] tokens = header.split(": ");
+
+    if (noMoreHeaders(header)) {
+      return false;
+    }
+    if (tokens.length < 2) {
+      flagBadRequest();
+      return false;
+    }
+
+    this.headers.put(tokens[0], tokens[1]);
+    return true;
+  }
+
+  private boolean noMoreHeaders(String header) {
+    return header.isEmpty();
+  }
+
+  private boolean parseBody() {
+    int contentLength = this.getContentLength();
+
+    if (contentLength == -1) {
+      return true;
+    }
+
+    while ((currentLine = this.bufferReader.readLine()) != null) {
+      
+    }
   }
 
   private void printDataFields() {
@@ -96,7 +111,8 @@ public class Request {
     }
   }
 
-  private void returnBadRequest() {
+  private void flagBadRequest() {
+    this.badRequest = true;
     System.out.println("400 Bad request");
   }
 
@@ -116,5 +132,15 @@ public class Request {
     String value;
     value = this.headers.getOrDefault(key, "KEY_NOT_FOUND");
     return value;
+  }
+
+  private int getContentLength() {
+    String contentLength = this.getHeader("content-length");
+
+    if (contentLength != "KEY_NOT_FOUND") {
+      return Integer.parseInt(contentLength);
+    }
+
+    return -1;
   }
 }
