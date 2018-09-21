@@ -6,15 +6,21 @@ import request.*;
 import resource.*;
 import response.*;
 import accesscheck.*;
+// import worker.*;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 class WebServer {
+  // Dictionary accessFiles;
+  private static ConfigurationReader configReader = new ConfigurationReader();
+  private static Config HTTPD_CONF, MIME_TYPE;
+
+  private static ExecutorService pool;
+  private static final int THREAD_COUNT = 4;
 
   private static ServerSocket serverSocket;
-  private static Config HTTPD_CONF, MIME_TYPE;
-  // Dictionary accessFiles;
   private static int port;
-
-  private static ConfigurationReader configReader = new ConfigurationReader();
 
   public static void main(String[] args) throws IOException {
     loadConfiguration();
@@ -24,6 +30,20 @@ class WebServer {
   private static void start() throws IOException {
     bindServerSocket();
     listenForClient();
+
+
+
+    // pool = Executors.newFixedThreadPool(THREAD_COUNT);
+    //
+    // for (int i = 0; i < THREAD_COUNT; i++) {
+    //   Runnable worker = new Worker(port);
+    //   pool.execute(worker);
+    // }
+    // stop();
+  }
+
+  private static void stop() {
+    pool.shutdown();
   }
 
   private static void loadConfiguration() {
@@ -63,4 +83,5 @@ class WebServer {
     final String HR = "-----------------";
     System.out.printf("%17s%25s%17s\n", HR, "    Connection Closed    ", HR);
   }
+
 }
