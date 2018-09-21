@@ -1,9 +1,10 @@
 
 package request;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.net.Socket;
+import java.io.IOException;
 
 public class Request {
 
@@ -11,109 +12,60 @@ public class Request {
   private String identifier = "no identifier received";
   private String version    = "no version received";
   private HashMap<String, String> headers;
-  private String body;
-
-  private BufferedReader bufferReader;
-  private boolean badRequest = false;
+  private String body = null;
 
   public Request(Socket client) throws IOException {
     headers = new HashMap<String, String>();
-    this.parseHttpRequest(client);
-  }
 
-  private void parseHttpRequest(Socket client) throws IOException {
-    String currentLine = null;
-    int lineNo = 0;
+    RequestParser requestParser = new RequestParser(client, this);
+    requestParser.parseHttpRequest();
 
-    this.bufferReader = new BufferedReader(
-      new InputStreamReader(client.getInputStream())
-    );
-
-    while((currentLine = this.bufferReader.readLine()) != null) {
-      System.out.println( "> " + currentLine );
-      lineNo++;
-
-      if (lineNo == 1) {
-        if (!this.parseFirstLine(currentLine)){
-          flagBadRequest();
-          break;
-        }
-      }
-      if (lineNo > 1) {
-        if (!this.parseHeaders(currentLine)){
-          if (!this.parseBody()) {
-            flagBadRequest();
-          }
-          break;
-        }
-      }
-    }
     printDataFields();
-  }
-
-  private boolean parseFirstLine(String firstLine) {
-    String[] tokens = firstLine.split(" ");
-    if (tokens.length < 3) {
-      return false;
-    }
-    this.method     = tokens[0];
-    this.identifier = tokens[1];
-    this.version    = tokens[2];
-    return true;
-  }
-
-  private boolean parseHeaders(String header) {
-    String[] tokens = header.split(": ");
-
-    if (noMoreHeaders(header)) {
-      return false;
-    }
-    if (tokens.length < 2) {
-      flagBadRequest();
-      return false;
-    }
-
-    this.headers.put(tokens[0], tokens[1]);
-    return true;
-  }
-
-  private boolean noMoreHeaders(String header) {
-    return header.isEmpty();
-  }
-
-  private boolean parseBody() {
-    int contentLength = this.getContentLength();
-
-    if (contentLength == -1) {
-      return true;
-    }
-
-    while ((currentLine = this.bufferReader.readLine()) != null) {
-      
-    }
   }
 
   private void printDataFields() {
     final String CB = ": ";
-    System.out.printf("%-20s%2s%S\n", "Method", CB, this.method);
-    System.out.printf("%-20s%2s%S\n", "Identifier", CB, this.identifier);
-    System.out.printf("%-20s%2s%S\n", "Version", CB, this.version);
+    final String HR = "- - - - - - - - - - - - -";
 
-    if (headers.isEmpty()) {
+    System.out.printf("%-20s%2s%S\n", "Method", CB, method);
+    System.out.printf("%-20s%2s%S\n", "Identifier", CB, identifier);
+    System.out.printf("%-20s%2s%S\n", "Version", CB, version);
+
+    if (this.headers.isEmpty()) {
       System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
     } else {
-      final String HR = "- - - - - - - - - - - - -";
-      System.out.printf("%-25s%9s%25s\n", HR, " Headers ", HR);
+      System.out.printf("%-25s%-9s%25s\n", HR, " Headers ", HR);
+      for(Map.Entry<String, String> entry : headers.entrySet()) {
+        System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+      }
     }
 
-    for(Map.Entry<String, String> entry : headers.entrySet()) {
-      System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+    if (this.body == null) {
+      System.out.printf("%-20s%2s%S\n", "Body", ": ", "no body received");
+    } else {
+      System.out.printf("%-25s%-9s%25s\n", HR, " Body ", HR);
+      System.out.println(body);
     }
   }
 
-  private void flagBadRequest() {
-    this.badRequest = true;
-    System.out.println("400 Bad request");
+  protected void setMethod(String method) {
+    this.method = method;
+  }
+
+  protected void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  protected void setVersion(String version) {
+    this.version = version;
+  }
+
+  protected void setBody(String body) {
+    this.body = body;
+  }
+
+  protected void putHeader(String key, String value) {
+    this.headers.put(key, value);
   }
 
   public String getMethod() {
@@ -128,19 +80,11 @@ public class Request {
     return this.version;
   }
 
-  public String getHeader(String key) {
-    String value;
-    value = this.headers.getOrDefault(key, "KEY_NOT_FOUND");
-    return value;
+  public String getBody() {
+    return this.body;
   }
 
-  private int getContentLength() {
-    String contentLength = this.getHeader("content-length");
-
-    if (contentLength != "KEY_NOT_FOUND") {
-      return Integer.parseInt(contentLength);
-    }
-
-    return -1;
+  public String getHeader(String key) {
+    return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
   }
 }
