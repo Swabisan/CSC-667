@@ -1,103 +1,72 @@
 
 package request;
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.net.Socket;
+import java.io.IOException;
 
 public class Request {
 
-  String method = "no method received";
-  String identifier = "no method received";
-  String version = "no method received";
-  Socket client;
-
-  public HashMap<String, String> headers = new HashMap<String,String>();
-  // - body : ?
+  private String method     = "no method received";
+  private String identifier = "no identifier received";
+  private String version    = "no version received";
+  private HashMap<String, String> headers;
+  private String body = null;
 
   public Request(Socket client) throws IOException {
-    this.client = client;
-    parseHttpRequest(client);
-  }
+    headers = new HashMap<String, String>();
 
-  private void parseHttpRequest(Socket client) throws IOException {
-    //this.headers = new HashMap<String,String>();
-    String currentLine;
-    int lineNo = 0;
+    RequestParser requestParser = new RequestParser(client, this);
+    requestParser.parseHttpRequest();
 
-    BufferedReader reader = new BufferedReader(
-      new InputStreamReader(client.getInputStream())
-    );
-
-    // while(true) {
-    while((currentLine = reader.readLine()) != null) {
-      System.out.println( "> " + currentLine );
-
-      if (isStringEmpty(currentLine)) {
-        break;
-      }
-
-      lineNo++;
-
-      if (lineNo == 1) {
-        if (!addFirstLine(currentLine)){
-          returnBadRequest();
-          break;
-        }
-      }
-      if (lineNo > 1) {
-        if (!addHeaders(currentLine)){
-          System.out.println("Successfully parsed request!");
-          // System.out.println(headers);
-          break;
-        }
-      }
-    }
-  // }
-    //printDataFields();
-  }
-
-  private boolean addHeaders(String header) {
-    String[] tokens = header.split(": ");
-    if (tokens.length < 2) {
-      return false;
-    }
-    this.headers.put(tokens[0], tokens[1]);
-    return true;
-  }
-
-  private boolean addFirstLine(String firstLine) {
-    String[] tokens = firstLine.split(" ");
-    if (tokens.length < 3) {
-      return false;
-    }
-    this.method     = tokens[0];
-    this.identifier = tokens[1];
-    this.version    = tokens[2];
-    return true;
-  }
-
-  private boolean isStringEmpty(String str) {
-    //This can be a 1-liner
-    if (str == null) {
-      return true;
-    }
-
-    if (str == "") {
-      return true;
-    }
-
-    return false;
+    printDataFields();
   }
 
   private void printDataFields() {
-    for(Map.Entry<String, String> entry : headers.entrySet()) {
-      System.out.println(entry.getKey() + ": " + entry.getValue());
+    final String CB = ": ";
+    final String HR = "- - - - - - - - - - - - -";
+
+    System.out.printf("%-20s%2s%S\n", "Method", CB, method);
+    System.out.printf("%-20s%2s%S\n", "Identifier", CB, identifier);
+    System.out.printf("%-20s%2s%S\n", "Version", CB, version);
+
+    if (this.headers.isEmpty()) {
+      System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
+    } else {
+      System.out.printf("%-25s%-9s%25s\n", HR, " Headers ", HR);
+      for(Map.Entry<String, String> entry : headers.entrySet()) {
+        System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+      }
+    }
+
+    if (this.body == null) {
+      System.out.printf("%-20s%2s%S\n", "Body", ": ", "no body received");
+    } else {
+      System.out.printf("%-25s%-9s%25s\n", HR, " Body ", HR);
+      System.out.println(body);
     }
   }
 
-  private void returnBadRequest() {
-    System.out.println("400 Bad request");
+  protected void setMethod(String method) {
+    this.method = method;
+  }
+
+  protected void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  protected void setVersion(String version) {
+    this.version = version;
+  }
+
+  protected void setBody(String body) {
+    this.body = body;
+>>>>>>> 7d96e7c90579f619fc727718a051b256aa4b36d6
+  }
+
+  protected void putHeader(String key, String value) {
+    this.headers.put(key, value);
   }
 
   public String getMethod() {
@@ -111,4 +80,15 @@ public class Request {
   public String getVersion() {
     return this.version;
   }
+<<<<<<< HEAD
+=======
+
+  public String getBody() {
+    return this.body;
+  }
+
+  public String getHeader(String key) {
+    return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
+  }
+>>>>>>> 7d96e7c90579f619fc727718a051b256aa4b36d6
 }
