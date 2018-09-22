@@ -62,7 +62,6 @@ public class Request {
 
   protected void setBody(String body) {
     this.body = body;
->>>>>>> 7d96e7c90579f619fc727718a051b256aa4b36d6
   }
 
   protected void putHeader(String key, String value) {
@@ -80,8 +79,6 @@ public class Request {
   public String getVersion() {
     return this.version;
   }
-<<<<<<< HEAD
-=======
 
   public String getBody() {
     return this.body;
@@ -90,5 +87,4 @@ public class Request {
   public String getHeader(String key) {
     return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
   }
->>>>>>> 7d96e7c90579f619fc727718a051b256aa4b36d6
 }
