@@ -3,6 +3,8 @@ package request;
 
 import java.net.Socket;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class RequestParser {
 
