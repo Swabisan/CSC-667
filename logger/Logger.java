@@ -46,7 +46,7 @@ public class Logger {
       printWriter.printf("%s %s %s [%s] %s %s %s %s %s\n",
         "testIP", "testIdentifier", "testUser",
         this.getDateTime(ZonedDateTime.now()),
-        "testVerb", "testURI", "testVersion",
+        request.getMethod(), request.getIdentifier(), request.getVersion(),
         "testStatus", "testSize");
       printWriter.close();
   }
