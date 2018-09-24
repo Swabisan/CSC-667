@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ResponseFactory {
 
-  public void getResponse(Resource resource) throws IOException {
+  public Response getResponse(Resource resource) throws IOException {
     String method = resource.getRequest().getMethod();
 
     switch(method) {
@@ -22,6 +22,8 @@ public class ResponseFactory {
         return new DELETEResponse(resource);
       case "HEAD":
         return new HEADResponse(resource);
+      default:
+        return null;
     }
   }
 
