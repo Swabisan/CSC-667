@@ -98,11 +98,11 @@ public class RequestParser {
   private int getContentLength() {
     String contentLength = request.getHeader("content-length");
 
-    if (contentLength != "KEY_NOT_FOUND") {
-      return Integer.parseInt(contentLength);
+    if (contentLength == "KEY_NOT_FOUND") {
+      return -1;
     }
 
-    return -1;
+    return Integer.parseInt(contentLength);
   }
 
   private void flagBadRequest() {

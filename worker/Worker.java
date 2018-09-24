@@ -1,8 +1,8 @@
 
 package worker;
 
-import java.net.*;
-import java.io.*;
+import java.net.Socket;
+import java.io.IOException;
 
 import request.*;
 import resource.*;
@@ -11,46 +11,50 @@ import accesscheck.*;
 
 public class Worker implements Runnable {
 
-  private ServerSocket serverSocket;
-  private int port;
+  private Socket clientSocket;
 
-  public Worker(int port) {
-    this.port = port;
+  public Worker(Socket clientSocket) {
+    this.clientSocket = clientSocket;
   }
 
   public void run() {
     try {
-      bindServerSocket();
-      listenForClient();
-    } catch(IOException e) {
-        e.printStackTrace();
+      talkToClient();
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
-  private void bindServerSocket() throws IOException {
-    serverSocket = new ServerSocket(port);
-    System.out.println("Listening on Port: " + serverSocket.getLocalPort());
-  }
+  private void talkToClient() throws IOException {
+    Request httpRequest = new Request(clientSocket);
+    Resource resource;
 
-  private void listenForClient() throws IOException {
-    Socket clientSocket = null;
+    if (httpRequest.isPopulated()) {
+      resource = new Resource(httpRequest);
+      if (resource.isProtected()) {
+        String authToken = httpRequest.getHeader("Authorization");
 
-    while(true) {
-      clientSocket = serverSocket.accept();
-      printConnectionEstablished();
+        if (authToken != "KEY_NOT_FOUND") {
+          AccessCheck accessCheck = new AccessCheck();
 
-      Request httpRequest = new Request(clientSocket);
+          if (!accessCheck.isAuthorized(authToken)) {
+            // 403
+          }
+        } else {
+          // 401
+        }
+      }
+      // send Response
 
-      // TODO send response
-
-      clientSocket.close();
-      printConnectionClosed();
     }
+
+    closeConnection();
   }
 
-  private void printConnectionEstablished() {
-    final String HR = "-----------------";
-    System.out.printf("%17s%25s%17s\n", HR, "Connection Established...", HR);
+  private void closeConnection() throws IOException {
+    clientSocket.close();
+    printConnectionClosed();
   }
 
   private void printConnectionClosed() {

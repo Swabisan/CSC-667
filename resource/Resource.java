@@ -11,7 +11,7 @@ public class Resource {
   ConfigurationReader configFactory = new ConfigurationReader();
   Config httpdConfig = configFactory.getConfig(HTTPD_CONF);
   String uri;
-  
+
   //Might have to read from config file directly.  Might also say.
   private static String HTTPD_CONF   = "HTTPD_CONF";
   private static String ALIAS        = "ALIAS";
@@ -39,7 +39,7 @@ public class Resource {
     return this.uri.equals(abSCRIPTED) || this.uri.equals(TRACIELY);
   }
 
-  private Boolean isProtected() {
+  public Boolean isProtected() {
     //Still need to access file working.
     return this.uri == PROTECTED;
   }

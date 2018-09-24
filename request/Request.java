@@ -87,4 +87,20 @@ public class Request {
   public String getHeader(String key) {
     return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
   }
+
+  public boolean isPopulated() {
+
+    if (this.method == "no method received") {
+      return false;
+    }
+    if (this.identifier == "no identifier received") {
+      return false;
+    }
+    if (this.version == "no version received") {
+      return false;
+    }
+
+    return true;
+  }
+
 }
