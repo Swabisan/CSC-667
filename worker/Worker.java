@@ -6,15 +6,18 @@ import java.io.IOException;
 
 import request.*;
 import resource.*;
-import response.*;
+import response.ResponseTest;
 import accesscheck.*;
+import logger.*;
 
 public class Worker implements Runnable {
 
   private Socket clientSocket;
+  private Logger logger;
 
   public Worker(Socket clientSocket) {
     this.clientSocket = clientSocket;
+    this.logger = new Logger();
   }
 
   public void run() {
@@ -30,9 +33,8 @@ public class Worker implements Runnable {
     Request httpRequest = new Request(clientSocket);
 
     if (httpRequest.isPopulated()) {
-      Resource resource;
-      resource = new Resource(httpRequest);
-
+      Resource resource = new Resource(httpRequest);
+      logger.log(httpRequest, resource);
       if (resource.isProtected()) {
         String authToken = httpRequest.getHeader("Authorization");
 
@@ -46,8 +48,8 @@ public class Worker implements Runnable {
           // 401
         }
       }
-      // send Response
-
+      ResponseTest tResponse = new ResponseTest(resource);
+      tResponse.send(clientSocket);
     }
 
     closeConnection();

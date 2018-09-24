@@ -9,11 +9,12 @@ import java.util.concurrent.Executors;
 
 public class ServerWorker implements Runnable {
 
-  private ExecutorService threadPool;
-  private int threadCount;
-  private Thread runningThread;
-  private int connectionCount = 0;
   private ServerSocket serverSocket;
+  private Socket clientSocket;
+  private ExecutorService threadPool;
+  private Thread runningThread;
+  private int connectionCount;
+  private int threadCount;
   private int port;
 
   public ServerWorker(int port, int threadCount) {
@@ -42,12 +43,13 @@ public class ServerWorker implements Runnable {
   }
 
   private void listenForClient() throws IOException {
-    Socket clientSocket = null;
+    connectionCount = 0;
     setRunningThread();
 
     while(true) {
       clientSocket = serverSocket.accept();
       printConnectionEstablished();
+
       threadPool.execute(new Worker(clientSocket));
     }
   }

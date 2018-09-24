@@ -10,9 +10,8 @@ public class RequestParser {
 
   private Request request;
   private Socket client;
-
   private BufferedReader bufferReader;
-  private String currentLine = null;
+  private String currentLine;
   private int lineNo;
 
   private boolean badRequest = false;

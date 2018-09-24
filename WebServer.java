@@ -16,10 +16,10 @@ public class WebServer {
 
   public static void main(String[] args) throws IOException {
     loadConfiguration();
-    start();
+    startServer();
   }
 
-  private static void start() throws IOException {
+  private static void startServer() throws IOException {
     ServerWorker server = new ServerWorker(port, THREAD_COUNT);
     new Thread(server).start();
   }
