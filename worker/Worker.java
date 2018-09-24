@@ -28,10 +28,11 @@ public class Worker implements Runnable {
 
   private void talkToClient() throws IOException {
     Request httpRequest = new Request(clientSocket);
-    Resource resource;
 
     if (httpRequest.isPopulated()) {
+      Resource resource;
       resource = new Resource(httpRequest);
+
       if (resource.isProtected()) {
         String authToken = httpRequest.getHeader("Authorization");
 
