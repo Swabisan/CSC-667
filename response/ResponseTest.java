@@ -1,22 +1,23 @@
 
 package response;
 
+import java.awt.image.BufferedImage;
 import configuration.*;
 import request.*;
 import resource.*;
 import java.io.BufferedReader;
 import java.io.File;
+import java.nio.file.Files;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
+import java.net.*;
 import java.util.Date;
+import java.io.FilterOutputStream;
 
-
-/******************************************
+/************************************************************
 This is just a proof of concept template that will be deleted.
 A general response that sends headers and some resources
-*******************************************/
+*************************************************************/
 
 public class ResponseTest {
   ConfigurationReader configFactory = new ConfigurationReader();
@@ -26,15 +27,14 @@ public class ResponseTest {
   private String reasonPhrase = "OK";
 
   private Resource resource;
-  private BufferedReader bufferReader;
   private FileReader fileReader;
   private String currentLine;
+  private int filesize;
 
   File file;
   Socket client;
   Request request;
   String absolutePath;
-  StringBuilder anotatedText;
 
  public ResponseTest(Resource resource) throws IOException {
    this.resource = resource;
@@ -46,31 +46,33 @@ public class ResponseTest {
      this.fileReader = new FileReader(absolutePath);
    }
 
-   System.out.println(this.request.getMethod());
  }
 
  public void send(Socket client) throws IOException {
    if(this.validFile()) {
-     OutputStreamWriter out = new OutputStreamWriter(client.getOutputStream());
+     FilterOutputStream out = new FilterOutputStream(client.getOutputStream());
 
-     String headers = this.getResponseHeaders();
-     out.write(headers.toCharArray());
+     byte[] headers = this.getResponseHeaders();
+
+     out.write(headers);
+
      out.write(this.sendResource());
+     System.out.println(this.getMimeType());
 
      out.flush();
      out.close();
    }
  }
 
- public String getResponseHeaders() {
+ public byte[] getResponseHeaders() throws IOException {
    StringBuilder headers = new StringBuilder();
    Date localDate = new Date();
 
    headers.append(this.request.getVersion());
    headers.append(" ");
-   headers.append(statusCode);
+   headers.append(this.statusCode);
    headers.append(" ");
-   headers.append(reasonPhrase);
+   headers.append(this.reasonPhrase);
    headers.append("\n");
    headers.append("Date: ");
    headers.append(localDate);
@@ -79,42 +81,35 @@ public class ResponseTest {
    headers.append("\n");
    headers.append("Status: 200 OK");
    headers.append("\n");
-   headers.append("Content-Type: " + getMimeType());
+   headers.append("Content-Type: " + this.getMimeType());
+   headers.append("\n");
+   headers.append("Content-Length: " + getSize());
    headers.append("\n");
    headers.append("Connection:");
    headers.append("\n");
    headers.append("\n");
 
-   return headers.toString();
+   byte[] string = headers.toString().getBytes();
+
+   return string;
  }
 
- public long getFileSize() {
-   try {
-     File localFile = new File(absolutePath);
-     return localFile.length();
-   }
-   catch (Exception e) {
-     e.printStackTrace();
-   }
-   return 0L;
+ public int getSize() throws IOException {
+   byte[] fileContent = Files.readAllBytes(this.file.toPath());
+
+   return fileContent.length;
  }
 
- public String sendResource() throws IOException {
-   String str1 = null;
-   String str2 = "";
+ public byte[] sendResource() throws IOException {
+   byte[] fileContent = Files.readAllBytes(this.file.toPath());
 
-   FileReader file = fileReader;
-   BufferedReader bufferReader = new BufferedReader(file);
-
-   while ((str1 = bufferReader.readLine()) != null) {
-     str2 = str2.concat(str1);
-   }
-
-   return str2;
+   return fileContent;
  }
+
 
  public Boolean validFile() {
-   if ((this.request.getIdentifier().equals("/ab/")) || (this.request.getIdentifier().equals("/~traciely/"))) {
+   if ((this.request.getIdentifier().equals("/ab/"))
+   || (this.request.getIdentifier().equals("/~traciely/"))) {
      return true;
    }
    return file.exists() && !file.isDirectory();
@@ -129,7 +124,7 @@ public class ResponseTest {
  }
 
  public static void main(String[] args) throws IOException {
-   java.net.ServerSocket localServerSocket = new java.net.ServerSocket(3300);
+   ServerSocket localServerSocket = new ServerSocket(3300);
    Socket localSocket = null;
    for (;;) {
      localSocket = localServerSocket.accept();
