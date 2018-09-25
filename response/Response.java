@@ -21,6 +21,7 @@ public abstract class Response {
   File file;
   public static String body;
   public static byte[] bodyBytes;
+  public static int statusCode;
 
   public abstract void send(OutputStream out) throws IOException;
 
@@ -38,7 +39,7 @@ public abstract class Response {
 
     headers.append(this.request.getVersion());
     headers.append(" ");
-    headers.append(404);
+    headers.append(this.statusCode = 404);
     headers.append(" ");
     headers.append("Not Found");
     headers.append("\n");
