@@ -19,7 +19,7 @@ public abstract class Response {
   Resource resource;
   Request request;
   File file;
-  
+
   public static String body;
   public static byte[] bodyBytes;
   public static int statusCode;
@@ -162,6 +162,10 @@ public abstract class Response {
   }
 
   public int getByteLength() {
+    if (this.bodyBytes == null ) {
+      return 0;
+    }
+
     return this.bodyBytes.length;
   }
 

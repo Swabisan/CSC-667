@@ -13,6 +13,7 @@ public class Request {
   private String version    = "no version received";
   private HashMap<String, String> headers;
   private String body = null;
+  private String inetAddress = "-";
 
   public Request(Socket client) throws IOException {
     headers = new HashMap<String, String>();
@@ -20,7 +21,7 @@ public class Request {
     RequestParser requestParser = new RequestParser(client, this);
     requestParser.parseHttpRequest();
 
-    // printDataFields();
+    printDataFields();
   }
 
   private void printDataFields() {
@@ -70,6 +71,10 @@ public class Request {
     this.body = body;
   }
 
+  protected void setInetAddress(String inetAddress) {
+    this.inetAddress = inetAddress;
+  }
+
   protected void putHeader(String key, String value) {
     this.headers.put(key, value);
   }
@@ -88,6 +93,10 @@ public class Request {
 
   public String getBody() {
     return this.body;
+  }
+
+  public String getInetAddress() {
+    return this.inetAddress;
   }
 
   public String getHeader(String key) {
