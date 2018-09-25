@@ -27,24 +27,30 @@ public class Request {
     final String CB = ": ";
     final String HR = "- - - - - - - - - - - - -";
 
-    System.out.printf("%-20s%2s%S\n", "Method", CB, method);
-    System.out.printf("%-20s%2s%S\n", "Identifier", CB, identifier);
-    System.out.printf("%-20s%2s%S\n", "Version", CB, version);
+    if (isPopulated()) {
+      System.out.printf("%-25s%-9s%25s\n", HR, " Request ", HR);
+      System.out.printf("%-20s%2s%S\n", "Method", CB, method);
+      System.out.printf("%-20s%2s%S\n", "Identifier", CB, identifier);
+      System.out.printf("%-20s%2s%S\n", "Version", CB, version);
 
-    if (this.headers.isEmpty()) {
-      System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
-    } else {
-      System.out.printf("%-25s%-9s%25s\n", HR, " Headers ", HR);
-      for(Map.Entry<String, String> entry : headers.entrySet()) {
-        System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+      if (this.headers.isEmpty()) {
+        System.out.printf("%-20s%2s%S\n", "Headers", ": ", "no headers received");
+
+      } else {
+        System.out.printf("%-25s%-9s%25s\n", HR, " Headers ", HR);
+
+        for(Map.Entry<String, String> entry : headers.entrySet()) {
+          System.out.printf("%-20s%2s%S\n", entry.getKey(), CB, entry.getValue());
+        }
       }
-    }
 
-    if (this.body == null) {
-      System.out.printf("%-20s%2s%S\n", "Body", ": ", "no body received");
-    } else {
-      System.out.printf("%-25s%-9s%25s\n", HR, " Body ", HR);
-      System.out.println(body);
+      if (this.body == null) {
+        System.out.printf("%-20s%2s%S\n", "Body", ": ", "no body received");
+
+      } else {
+        System.out.printf("%-25s%-9s%25s\n", HR, " Body ", HR);
+        System.out.println(body);
+      }
     }
   }
 
@@ -87,4 +93,20 @@ public class Request {
   public String getHeader(String key) {
     return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
   }
+
+  public boolean isPopulated() {
+
+    if (this.method == "no method received") {
+      return false;
+    }
+    if (this.identifier == "no identifier received") {
+      return false;
+    }
+    if (this.version == "no version received") {
+      return false;
+    }
+
+    return true;
+  }
+
 }

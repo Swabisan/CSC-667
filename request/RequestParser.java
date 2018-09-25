@@ -10,9 +10,8 @@ public class RequestParser {
 
   private Request request;
   private Socket client;
-
   private BufferedReader bufferReader;
-  private String currentLine = null;
+  private String currentLine;
   private int lineNo;
 
   private boolean badRequest = false;
@@ -98,11 +97,11 @@ public class RequestParser {
   private int getContentLength() {
     String contentLength = request.getHeader("content-length");
 
-    if (contentLength != "KEY_NOT_FOUND") {
-      return Integer.parseInt(contentLength);
+    if (contentLength == "KEY_NOT_FOUND") {
+      return -1;
     }
 
-    return -1;
+    return Integer.parseInt(contentLength);
   }
 
   private void flagBadRequest() {

@@ -1,29 +1,27 @@
-import java.net.*;
-import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import configuration.*;
-import request.*;
-import resource.*;
-import response.*;
-import accesscheck.*;
+import worker.*;
 
-class WebServer {
-
-  private static ServerSocket serverSocket;
-  private static Config HTTPD_CONF, MIME_TYPE;
+public class WebServer {
   // Dictionary accessFiles;
-  private static int port;
-
   private static ConfigurationReader configReader = new ConfigurationReader();
+  private static Config HTTPD_CONF, MIME_TYPE;
+  private static final int THREAD_COUNT = 4;
+  private static int port;
 
   public static void main(String[] args) throws IOException {
     loadConfiguration();
-    start();
+    startServer();
   }
 
-  private static void start() throws IOException {
-    bindServerSocket();
-    listenForClient();
+  private static void startServer() throws IOException {
+    ServerWorker server = new ServerWorker(port, THREAD_COUNT);
+    new Thread(server).start();
   }
 
   private static void loadConfiguration() {
@@ -33,34 +31,4 @@ class WebServer {
     port = Integer.parseInt(HTTPD_CONF.lookUp("Listen", "HTTPD_CONF"));
   }
 
-  private static void bindServerSocket() throws IOException {
-    serverSocket = new ServerSocket(port);
-    System.out.println("Listening on Port: " + serverSocket.getLocalPort());
-  }
-
-  private static void listenForClient() throws IOException {
-    Socket clientSocket = null;
-
-    while(true) {
-      clientSocket = serverSocket.accept();
-      printConnectionEstablished();
-
-      Request httpRequest = new Request(clientSocket);
-
-      // TODO send response
-
-      clientSocket.close();
-      printConnectionClosed();
-    }
-  }
-
-  private static void printConnectionEstablished() {
-    final String HR = "-----------------";
-    System.out.printf("%17s%25s%17s\n", HR, "Connection Established...", HR);
-  }
-
-  private static void printConnectionClosed() {
-    final String HR = "-----------------";
-    System.out.printf("%17s%25s%17s\n", HR, "    Connection Closed    ", HR);
-  }
 }
