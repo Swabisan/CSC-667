@@ -36,7 +36,7 @@ public class Logger {
         request.getInetAddress(), "-", username,
         this.getDateTime(ZonedDateTime.now()),
         request.getMethod(), request.getIdentifier(), request.getVersion(),
-        "responseCode", "responseSize");
+        response.getStatusCode(), response.getByteLength());
       printWriter.close();
   }
 

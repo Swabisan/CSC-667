@@ -53,6 +53,7 @@ public class Worker implements Runnable {
       Response response = responseFactory.getResponse(resource);
 
       response.send(clientSocket.getOutputStream());
+      System.out.println(response);
       logger.log(httpRequest, response, username);
     }
 
