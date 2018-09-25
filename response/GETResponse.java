@@ -16,7 +16,6 @@ import java.nio.file.Files;
 
 public class GETResponse extends Response {
 
-  private static int statusCode;
   private static String reasonPhrase;
   private static String absolutePath;
   private static FileReader fileReader;
@@ -76,5 +75,4 @@ public class GETResponse extends Response {
     return string;
   }
 
-  
 }

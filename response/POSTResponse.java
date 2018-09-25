@@ -17,7 +17,6 @@ import java.nio.file.Files;
 public class POSTResponse extends Response {
 
   private static String reasonPhrase = "OK";
-  private static int statusCode = 200;
   private static String absolutePath;
   private static FileReader fileReader;
 
@@ -35,7 +34,7 @@ public class POSTResponse extends Response {
   }
 
   public void send(OutputStream out) throws IOException {
-    
+
     if(this.validFile() && this.body.equals("")) {
       out.write(this.getResponseHeaders());
       out.write(this.getResource());
@@ -60,7 +59,7 @@ public class POSTResponse extends Response {
 
     headers.append(this.request.getVersion());
     headers.append(" ");
-    headers.append(this.statusCode);
+    headers.append(this.statusCode = 200);
     headers.append(" ");
     headers.append(this.reasonPhrase);
     headers.append("\n");
