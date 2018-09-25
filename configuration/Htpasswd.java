@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class AuthHtpasswd extends Config {
+public class Htpasswd extends Config {
 
   private String config;
   private HashMap<String, String> passwords;
@@ -14,7 +14,7 @@ public class AuthHtpasswd extends Config {
   private FileReader fileReader;
   private String currentLine;
 
-  public AuthHtpasswd(String filePath) {
+  public Htpasswd(String filePath) {
     this.config = filePath;
     this.passwords = new HashMap<String, String>();
     this.load();
@@ -50,7 +50,7 @@ public class AuthHtpasswd extends Config {
     String[] tokens = line.split(":");
 
     if (tokens.length == 2) {
-      passwords.put(tokens[ 0 ], tokens[ 1 ].replace( "{SHA}", "" ).trim());
+      passwords.put(tokens[ 0 ], tokens[ 1 ].replace("{SHA}", "").trim());
     }
   }
 }
