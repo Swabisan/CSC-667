@@ -14,8 +14,6 @@ public class RequestParser {
   private String currentLine;
   private int lineNo;
 
-  private boolean badRequest = false;
-
   public RequestParser(Socket client, Request request) {
     this.client = client;
     this.request = request;
@@ -106,8 +104,7 @@ public class RequestParser {
   }
 
   private void flagBadRequest() {
-    badRequest = true;
-    System.out.println("400 Bad request");
+    request.setBadRequest(true);
   }
 
 }

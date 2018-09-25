@@ -32,14 +32,21 @@ public class Worker implements Runnable {
   private void talkToClient() throws IOException {
     Request httpRequest = new Request(clientSocket);
 
+    if (httpRequest.isBadRequest()) {
+
+    }
+
     if (httpRequest.isPopulated()) {
       Resource resource = new Resource(httpRequest);
       String username = "-";
+
       if (true) {
         String authToken = httpRequest.getHeader("Authorization");
+
         if (authToken != "KEY_NOT_FOUND") {
           AccessCheck accessCheck = new AccessCheck();
           username = accessCheck.getUsername(authToken);
+
           if (!accessCheck.isAuthorized(authToken)) {
             // 403
           }
