@@ -10,7 +10,7 @@ public class Resource {
 
   ConfigurationReader configFactory = new ConfigurationReader();
   Config httpdConfig = configFactory.getConfig(HTTPD_CONF);
-  String uri;
+  public static String uri;
 
   //Might have to read from config file directly.  Might also say.
   private static String HTTPD_CONF   = "HTTPD_CONF";

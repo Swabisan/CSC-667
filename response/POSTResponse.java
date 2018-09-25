@@ -8,7 +8,6 @@ import java.util.Date;
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
-import java.io.FilterOutputStream;
 import java.io.OutputStream;
 import java.io.File;
 import java.io.FileReader;
@@ -16,8 +15,7 @@ import java.nio.file.Files;
 
 public class POSTResponse extends Response {
 
-  private static String reasonPhrase = "OK";
-  private static int statusCode = 200;
+  private static String reasonPhrase;
   private static String absolutePath;
   private static FileReader fileReader;
 
@@ -28,6 +26,8 @@ public class POSTResponse extends Response {
     this.file = new File(absolutePath);
     this.body = this.request.getBody();
     this.bodyBytes = this.body.getBytes();
+    this.statusCode = 200;
+    this.reasonPhrase = "OK";
 
     if(this.validFile()) {
       this.fileReader = new FileReader(absolutePath);
@@ -35,7 +35,7 @@ public class POSTResponse extends Response {
   }
 
   public void send(OutputStream out) throws IOException {
-    
+
     if(this.validFile() && this.body.equals("")) {
       out.write(this.getResponseHeaders());
       out.write(this.getResource());
@@ -81,12 +81,6 @@ public class POSTResponse extends Response {
 
     byte[] headerBytes = headers.toString().getBytes();
 
-    System.out.println(headers.toString());
-
     return headerBytes;
-  }
-
-  public static void main(String[] args) {
-    System.out.println("james");
   }
 }
