@@ -19,9 +19,11 @@ public abstract class Response {
   Resource resource;
   Request request;
   File file;
+  
   public static String body;
   public static byte[] bodyBytes;
   public static int statusCode;
+  public static String reasonPhrase;
 
   public abstract void send(OutputStream out) throws IOException;
 
@@ -31,6 +33,34 @@ public abstract class Response {
       return true;
     }
     return file.exists() && !file.isDirectory();
+  }
+
+  public byte[] getResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode);
+    headers.append(" ");
+    headers.append(this.reasonPhrase = "OK");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 200 OK");
+    headers.append("\n");
+    headers.append("Content-Type: " + this.getContenType());
+    headers.append("\n");
+    headers.append("Content-Length: " + this.getResource().length);
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headersBytes = headers.toString().getBytes();
+
+    return headersBytes;
   }
 
   public byte[] get404ResponseHeaders() throws IOException {
@@ -54,9 +84,9 @@ public abstract class Response {
     headers.append("\n");
     headers.append("\n");
 
-    byte[] string = headers.toString().getBytes();
+    byte[] headersBytes = headers.toString().getBytes();
 
-    return string;
+    return headersBytes;
   }
 
   public byte[] get201ResponseHeaders() throws IOException {
@@ -65,7 +95,7 @@ public abstract class Response {
 
     headers.append(this.request.getVersion());
     headers.append(" ");
-    headers.append(201);
+    headers.append(this.statusCode = 201);
     headers.append(" ");
     headers.append("CREATED");
     headers.append("\n");
@@ -76,13 +106,45 @@ public abstract class Response {
     headers.append("\n");
     headers.append("Status: 201 CREATED");
     headers.append("\n");
-    headers.append("Content-Type: " + this.bodyBytes.length + this.getResource().length);
+    headers.append("Content-Location: ");
+    headers.append(this.resource.uri);
+    headers.append("\n");
+    headers.append("Content-Length: " + this.bodyBytes.length + this.getResource().length);
     headers.append("\n");
     headers.append("\n");
 
-    byte[] string = headers.toString().getBytes();
+    byte[] headerBytes = headers.toString().getBytes();
 
-    return string;
+    return headerBytes;
+  }
+
+  public byte[] get204ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode = 204);
+    headers.append(" ");
+    headers.append("NO CONTENT");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 204 NO CONTENT");
+    headers.append("\n");
+    headers.append("Content-Location: ");
+    headers.append(this.resource.uri);
+    headers.append("\n");
+    headers.append("Content-Length: " + this.getResource().length);
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headerBytes = headers.toString().getBytes();
+
+    return headerBytes;
   }
 
   public String getContenType() {
@@ -97,5 +159,13 @@ public abstract class Response {
     byte[] fileContent = Files.readAllBytes(this.file.toPath());
 
     return fileContent;
+  }
+
+  public int getByteLength() {
+    return this.bodyBytes.length;
+  }
+
+  public int getStatusCode() {
+    return this.statusCode;
   }
 }
