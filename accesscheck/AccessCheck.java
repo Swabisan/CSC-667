@@ -10,14 +10,21 @@ import configuration.*;
 public class AccessCheck {
 
   ConfigurationReader configReader = new ConfigurationReader();
-  Config authHtpasswd;
+  Config htpasswd, htaccess;
 
   public AccessCheck() {
-    this.authHtpasswd = configReader.getConfig("AUTH_HTPASSWD");
+    this.htaccess = configReader.getConfig("HTACCESS");
+
+    String htpasswdFilePath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
+    this.htpasswd = new Htpasswd(htpasswdFilePath);
   }
 
   private AccessCheck(int AccessCheck_Test) {
-    this.authHtpasswd = configReader.getConfig("AUTH_HTPASSWD");
+    this.htpasswd = configReader.getConfig("AUTH_HTPASSWD");
+
+    String htpasswdFilePath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
+    this.htpasswd = new Htpasswd(htpasswdFilePath);
+
     this.testAccesCheck();
   }
 
@@ -37,7 +44,7 @@ public class AccessCheck {
     String storedPassword;
 
     try {
-      storedPassword = authHtpasswd.lookUp(username, "PASSWORD");
+      storedPassword = htpasswd.lookUp(username, "PASSWORD");
 
     } catch (NullPointerException e) {
       return false;
@@ -88,7 +95,7 @@ public class AccessCheck {
 
   private void testAccesCheck() {
     String username = "jrob";
-    String password = authHtpasswd.lookUp(username, "PASSWORD");
+    String password = htpasswd.lookUp(username, "PASSWORD");
 
     final String HR = "-------------";
     System.out.printf("%13s%-33s%13s\n", HR, "  Initializing AccessCheck Test  ", HR);

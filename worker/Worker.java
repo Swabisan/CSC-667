@@ -38,9 +38,9 @@ public class Worker implements Runnable {
 
     if (httpRequest.isPopulated()) {
       Resource resource = new Resource(httpRequest);
-      String username = "-";
+      String username = "PUBLIC_USER";
 
-      if (true) {
+      if (resource.isProtected()) {
         String authToken = httpRequest.getHeader("Authorization");
 
         if (authToken != "KEY_NOT_FOUND") {
@@ -60,7 +60,6 @@ public class Worker implements Runnable {
       Response response = responseFactory.getResponse(resource);
 
       response.send(clientSocket.getOutputStream());
-      System.out.println(response);
       logger.log(httpRequest, response, username);
     }
 
