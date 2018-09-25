@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import request.*;
 import resource.*;
-import response.ResponseTest;
+import response.*;
 import accesscheck.*;
 import logger.*;
 
@@ -48,8 +48,11 @@ public class Worker implements Runnable {
           // 401
         }
       }
-      ResponseTest tResponse = new ResponseTest(resource);
-      tResponse.send(clientSocket);
+      //This will change to responsefactory
+      ResponseFactory responseFactory = new ResponseFactory();
+      Response response = responseFactory.getResponse(resource);
+      
+      response.send(clientSocket.getOutputStream());
     }
 
     closeConnection();
@@ -57,7 +60,7 @@ public class Worker implements Runnable {
 
   private void closeConnection() throws IOException {
     clientSocket.close();
-    printConnectionClosed();
+    // printConnectionClosed();
   }
 
   private void printConnectionClosed() {

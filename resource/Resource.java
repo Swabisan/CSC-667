@@ -28,7 +28,15 @@ public class Resource {
 
   public String absolutePath() {
     if(this.isScripted()) {
-      return this.httpdConfig.lookUp(this.uri, ALIAS);
+      if(this.uri.equals(abSCRIPTED)) {
+        return this.httpdConfig.lookUp(this.uri, ALIAS).concat("index.html");
+      }
+      //handle TRACIELY scripted
+    }
+
+    if(this.uri.equals("/")) {
+      return this.httpdConfig.lookUp(DOCUMENTROOT, HTTPD_CONF)
+        .concat(this.trimedUri()).concat("index.html");
     }
 
     return this.httpdConfig.lookUp(DOCUMENTROOT, HTTPD_CONF)

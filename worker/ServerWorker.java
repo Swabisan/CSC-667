@@ -48,7 +48,7 @@ public class ServerWorker implements Runnable {
 
     while(true) {
       clientSocket = serverSocket.accept();
-      printConnectionEstablished();
+      // printConnectionEstablished();
 
       threadPool.execute(new Worker(clientSocket));
     }
