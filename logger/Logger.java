@@ -12,7 +12,7 @@ import java.lang.StringBuffer;
 
 
 import configuration.*;
-import resource.*;
+import response.*;
 import request.*;
 
 public class Logger {
@@ -26,42 +26,18 @@ public class Logger {
     this.logFile = this.httpdConf.lookUp("LogFile", "HTTPD_CONF");
   }
 
-  public Logger(int test) {
-    this.httpdConf = this.configFactory.getConfig("HTTPD_CONF");
-    this.logFile = this.httpdConf.lookUp("LogFile", "HTTPD_CONF");
-
-    try {
-      this.log();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void log(Request request, Resource resource)
+  public void log(Request request, Response response, String username)
     throws IOException {
       FileWriter fileWriter = new FileWriter(this.logFile, true);
       PrintWriter printWriter = new PrintWriter(fileWriter);
 
       // Common_Log_Format: IP identifier user [date:time tz] verb uri version status size
       printWriter.printf("%s %s %s [%s] %s %s %s %s %s\n",
-        "testIP", "testIdentifier", "testUser",
+        request.getInetAddress(), "-", username,
         this.getDateTime(ZonedDateTime.now()),
         request.getMethod(), request.getIdentifier(), request.getVersion(),
-        "testStatus", "testSize");
+        "responseCode", "responseSize");
       printWriter.close();
-  }
-
-  public void log() throws IOException {
-    FileWriter fileWriter = new FileWriter(this.logFile, true);
-    PrintWriter printWriter = new PrintWriter(fileWriter);
-
-    // Common_Log_Format: IP identifier user [date:time tz] verb uri version status size
-    printWriter.printf("%s %s %s [%s] %s %s %s %s %s\n",
-      "testIP", "testIdentifier", "testUser",
-      this.getDateTime(ZonedDateTime.now()),
-      "testVerb", "testURI", "testVersion",
-      "testStatus", "testSize");
-    printWriter.close();
   }
 
   private String getDateTime(ZonedDateTime timeStamp) {
@@ -72,7 +48,4 @@ public class Logger {
     timeStamp.getSecond(), timeStamp.getOffset());
   }
 
-  public static void main(String[] args) {
-    Logger logger = new Logger(-1);
-  }
 }

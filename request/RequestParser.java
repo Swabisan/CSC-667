@@ -22,6 +22,7 @@ public class RequestParser {
   }
 
   protected void parseHttpRequest() throws IOException {
+    request.setInetAddress(client.getInetAddress().toString());
     lineNo = 0;
 
     bufferReader = new BufferedReader(

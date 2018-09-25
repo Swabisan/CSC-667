@@ -34,25 +34,26 @@ public class Worker implements Runnable {
 
     if (httpRequest.isPopulated()) {
       Resource resource = new Resource(httpRequest);
-      logger.log(httpRequest, resource);
-      if (resource.isProtected()) {
+      String username = "-";
+      if (true) {
         String authToken = httpRequest.getHeader("Authorization");
-
         if (authToken != "KEY_NOT_FOUND") {
           AccessCheck accessCheck = new AccessCheck();
-
+          username = accessCheck.getUsername(authToken);
           if (!accessCheck.isAuthorized(authToken)) {
             // 403
           }
+
         } else {
           // 401
         }
       }
-      //This will change to responsefactory
+
       ResponseFactory responseFactory = new ResponseFactory();
       Response response = responseFactory.getResponse(resource);
-      
+
       response.send(clientSocket.getOutputStream());
+      logger.log(httpRequest, response, username);
     }
 
     closeConnection();

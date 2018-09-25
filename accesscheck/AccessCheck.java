@@ -16,17 +16,13 @@ public class AccessCheck {
     this.authHtpasswd = configReader.getConfig("AUTH_HTPASSWD");
   }
 
-  public AccessCheck(int test) {
+  private AccessCheck(int AccessCheck_Test) {
     this.authHtpasswd = configReader.getConfig("AUTH_HTPASSWD");
     this.testAccesCheck();
   }
 
   public boolean isAuthorized(String authInfo) {
-    String credentials = new String(
-      Base64.getDecoder().decode(authInfo),
-      Charset.forName("UTF-8")
-    );
-
+    String credentials = decodeAuthInfo(authInfo);
     String[] tokens = credentials.split(":");
 
     if (tokens.length == 2) {
@@ -63,6 +59,31 @@ public class AccessCheck {
     } catch(Exception e) {
       return "";
     }
+  }
+
+  public String getUsername(String authInfo) {
+    String credentials = decodeAuthInfo(authInfo);
+    String[] tokens = credentials.split(":");
+
+    if (tokens.length > 0) {
+      return tokens[0];
+    }
+
+    return "-";
+  }
+
+  private String decodeAuthInfo(String authInfo) {
+    String[] tokens = authInfo.split(" ");
+
+    if (tokens[0].compareToIgnoreCase("BASIC") == 0) {
+      String credentials = new String(
+        Base64.getDecoder().decode("bWljaGFlbDpzd2Fuc29u"),
+        Charset.forName("UTF-8")
+      );
+      return credentials;
+    }
+
+    return authInfo;
   }
 
   private void testAccesCheck() {
