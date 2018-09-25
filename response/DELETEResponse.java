@@ -1,6 +1,7 @@
 
 package response;
 import resource.*;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class DELETEResponse extends Response {
@@ -12,8 +13,8 @@ public class DELETEResponse extends Response {
 
   }
 
-  public void send(Socket client) {
-    
+  public void send(OutputStream out) {
+
   }
 
   public static void main(String[] args) {

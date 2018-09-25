@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.nio.file.Files;
+import java.io.OutputStream;
 
 public abstract class Response {
 
@@ -18,8 +19,10 @@ public abstract class Response {
   Resource resource;
   Request request;
   File file;
+  public static String body;
+  public static byte[] bodyBytes;
 
-  public abstract void send(Socket client) throws IOException;
+  public abstract void send(OutputStream out) throws IOException;
 
   public Boolean validFile() {
     if ((this.request.getIdentifier().equals("/ab/"))
@@ -28,6 +31,7 @@ public abstract class Response {
     }
     return file.exists() && !file.isDirectory();
   }
+
   public byte[] get404ResponseHeaders() throws IOException {
     StringBuilder headers = new StringBuilder();
     Date localDate = new Date();
@@ -53,6 +57,33 @@ public abstract class Response {
 
     return string;
   }
+
+  public byte[] get201ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(201);
+    headers.append(" ");
+    headers.append("CREATED");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 201 CREATED");
+    headers.append("\n");
+    headers.append("Content-Type: " + this.bodyBytes.length + this.getResource().length);
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] string = headers.toString().getBytes();
+
+    return string;
+  }
+
   public String getContenType() {
     String[] identifiers = file.getName().split("\\.");
     String lastElement = identifiers[identifiers.length - 1];

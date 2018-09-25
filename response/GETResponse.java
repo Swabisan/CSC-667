@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
 import java.io.FilterOutputStream;
+import java.io.OutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
@@ -34,25 +35,16 @@ public class GETResponse extends Response {
   }
   //Get sends file content
 
-  public void send(Socket client) throws IOException {
-    try {
-
-      FilterOutputStream out = new FilterOutputStream(client.getOutputStream());
-
+  public void send(OutputStream out) throws IOException {
+    if(this.validFile()) {
       out.write(this.getResponseHeaders());
       out.write(this.getResource());
       out.flush();
       out.close();
-
-    } catch(Exception e) {
-      FilterOutputStream out = new FilterOutputStream(client.getOutputStream());
-      try {
-        out.write(this.get404ResponseHeaders());
-        out.flush();
-        out.close();
-      } catch(Exception er) {
-        er.printStackTrace();
-      }
+    } else {
+      out.write(this.get404ResponseHeaders());
+      out.flush();
+      out.close();
     }
   }
 
@@ -84,35 +76,5 @@ public class GETResponse extends Response {
     return string;
   }
 
-  // public String getContenType() {
-  //   String[] identifiers = file.getName().split("\\.");
-  //   String lastElement = identifiers[identifiers.length - 1];
-  //   String mimeType = mimeTypes.lookUp(lastElement, "MIME_TYPE");
-  //
-  //   return mimeType;
-  // }
-  //
-  // public byte[] getResource() throws IOException {
-  //   byte[] fileContent = Files.readAllBytes(this.file.toPath());
-  //
-  //   return fileContent;
-  // }
-
-  public static void main(String[] args) throws IOException {
-    System.out.println("james");
-    ServerSocket localServerSocket = new ServerSocket(3100);
-    Socket localSocket = null;
-
-    for (;;) {
-      localSocket = localServerSocket.accept();
-      Request localRequest = new Request(localSocket);
-      Resource localResource = new Resource(localRequest);
-      GETResponse localGETResponse = new GETResponse(localResource);
-
-      localGETResponse.send(localSocket);
-      System.out.println(localGETResponse.absolutePath);
-
-      localSocket.close();
-     }
-  }
+  
 }
