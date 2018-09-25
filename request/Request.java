@@ -15,6 +15,8 @@ public class Request {
   private String body = null;
   private String inetAddress = "-";
 
+  private boolean badRequest = false;
+
   public Request(Socket client) throws IOException {
     headers = new HashMap<String, String>();
 
@@ -75,6 +77,10 @@ public class Request {
     this.inetAddress = inetAddress;
   }
 
+  protected void setBadRequest(boolean badRequest) {
+    this.badRequest = badRequest;
+  }
+
   protected void putHeader(String key, String value) {
     this.headers.put(key, value);
   }
@@ -101,6 +107,10 @@ public class Request {
 
   public String getHeader(String key) {
     return this.headers.getOrDefault(key, "KEY_NOT_FOUND");
+  }
+
+  public boolean isBadRequest() {
+    return this.badRequest;
   }
 
   public boolean isPopulated() {
