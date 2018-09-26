@@ -114,7 +114,7 @@ public abstract class Response {
   public byte[] get401ResponseHeaders() throws IOException {
     StringBuilder headers = new StringBuilder();
     Date localDate = new Date();
-
+    System.out.println(this.request.getVersion());
     headers.append(this.request.getVersion());
     headers.append(" ");
     headers.append(this.statusCode = 401);
