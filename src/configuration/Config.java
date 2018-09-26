@@ -1,5 +1,5 @@
 
-package configuration;
+package src.configuration;
 
 public abstract class Config {
   public abstract void load();

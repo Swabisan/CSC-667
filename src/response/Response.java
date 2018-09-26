@@ -1,9 +1,9 @@
 
-package response;
+package src.response;
 
-import request.*;
-import resource.*;
-import configuration.*;
+import src.request.*;
+import src.resource.*;
+import src.configuration.*;
 import java.net.Socket;
 import java.io.File;
 import java.io.IOException;

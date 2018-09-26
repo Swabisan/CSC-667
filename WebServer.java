@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import configuration.*;
-import worker.*;
+import src.configuration.*;
+import src.worker.*;
 
 public class WebServer {
   // Dictionary accessFiles;

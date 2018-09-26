@@ -1,22 +1,22 @@
 
-package configuration;
+package src.configuration;
 
 import java.util.HashMap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Htpasswd extends Config {
+public class Htaccess extends Config {
 
   private String config;
-  private HashMap<String, String> passwords;
+  private HashMap<String, String> htaccess;
   private BufferedReader bufferReader;
   private FileReader fileReader;
   private String currentLine;
 
-  public Htpasswd(String filePath) {
+  public Htaccess(String filePath) {
     this.config = filePath;
-    this.passwords = new HashMap<String, String>();
+    this.htaccess = new HashMap<String, String>();
     this.load();
   }
 
@@ -31,26 +31,26 @@ public class Htpasswd extends Config {
     } catch(IOException e) {
       e.printStackTrace();
     }
-  };
+  }
 
   public String lookUp(String key, String configType) {
-    String passwordValue = this.passwords.get(key);
+    String value = this.htaccess.get(key);
 
     if(configType == null) {
       return null;
     }
-    if(configType.equalsIgnoreCase("PASSWORD")) {
-      return passwordValue;
+    if(configType.equalsIgnoreCase("HTACCESS")) {
+      return value;
     }
 
     return null;
   };
 
   private void parseLine(String line) {
-    String[] tokens = line.split(":");
+    String[] tokens = line.split(" ");
 
     if (tokens.length == 2) {
-      passwords.put(tokens[ 0 ], tokens[ 1 ].replace("{SHA}", "").trim());
+      htaccess.put(tokens[ 0 ], tokens[ 1 ].replace("\"", "").trim());
     }
   }
 }

@@ -1,5 +1,5 @@
 
-package configuration;
+package src.configuration;
 
 import java.util.*;
 import java.util.HashMap;

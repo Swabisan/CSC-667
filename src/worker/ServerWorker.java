@@ -1,5 +1,5 @@
 
-package worker;
+package src.worker;
 
 import java.net.ServerSocket;
 import java.net.Socket;

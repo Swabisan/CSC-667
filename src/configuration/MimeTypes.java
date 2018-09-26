@@ -1,5 +1,5 @@
 
-package configuration;
+package src.configuration;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,16 +1,16 @@
 
-package resource;
+package src.resource;
 
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.Instant;
 import java.time.format.TextStyle;
-
 import java.net.*;
 import java.io.*;
-import request.*;
-import configuration.*;
+
+import src.request.*;
+import src.configuration.*;
 
 public class Resource {
 

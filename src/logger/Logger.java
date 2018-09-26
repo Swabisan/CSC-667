@@ -1,5 +1,5 @@
 
-package logger;
+package src.logger;
 
 import java.io.IOException;
 import java.io.FileWriter;
@@ -11,9 +11,9 @@ import java.lang.StringBuffer;
 
 
 
-import configuration.*;
-import response.*;
-import request.*;
+import src.configuration.*;
+import src.response.*;
+import src.request.*;
 
 public class Logger {
 

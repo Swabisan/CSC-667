@@ -1,8 +1,8 @@
 
-package response;
+package src.response;
 
-import resource.*;
-import request.*;
+import src.resource.*;
+import src.request.*;
 import java.util.*;
 import java.io.IOException;
 

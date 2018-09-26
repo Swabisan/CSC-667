@@ -1,11 +1,11 @@
 
-package accesscheck;
+package src.accesscheck;
 
 import java.util.Base64;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
-import configuration.*;
+import src.configuration.*;
 
 public class AccessCheck {
 

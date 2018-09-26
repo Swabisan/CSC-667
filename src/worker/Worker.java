@@ -1,5 +1,5 @@
 
-package worker;
+package src.worker;
 
 import java.net.Socket;
 import java.io.IOException;
@@ -13,11 +13,11 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
 
-import request.*;
-import resource.*;
-import response.*;
-import accesscheck.*;
-import logger.*;
+import src.request.*;
+import src.resource.*;
+import src.response.*;
+import src.accesscheck.*;
+import src.logger.*;
 
 public class Worker implements Runnable {
 

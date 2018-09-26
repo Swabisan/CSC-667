@@ -1,9 +1,9 @@
 
-package response;
+package src.response;
 
-import resource.*;
-import request.*;
-import configuration.*;
+import src.resource.*;
+import src.request.*;
+import src.configuration.*;
 import java.util.Date;
 import java.net.Socket;
 import java.net.ServerSocket;
@@ -13,19 +13,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 
-public class HEADResponse extends Response {
+public class DELETEResponse extends Response {
+  //202, 204, 200
+  private static int statusCode = 204;
 
   private static String reasonPhrase;
   private static String absolutePath;
   private static FileReader fileReader;
+  //Deletes file
 
-  public HEADResponse(Resource resource) throws IOException {
+  public DELETEResponse(Resource resource) throws IOException {
     this.resource = resource;
     this.request = resource.getRequest();
     this.absolutePath = resource.absolutePath();
     this.file = new File(absolutePath);
-    this.statusCode = 200;
-    this.reasonPhrase = "OK";
+    this.statusCode = 204;
+    this.reasonPhrase = "NO CONTENT";
 
     if(this.validFile()) {
       this.fileReader = new FileReader(absolutePath);
@@ -34,7 +37,8 @@ public class HEADResponse extends Response {
 
   public void send(OutputStream out) throws IOException {
     if(this.validFile()) {
-      out.write(this.getResponseHeaders());
+      out.write(this.get204ResponseHeaders());
+      this.file.delete();
       out.flush();
       out.close();
     } else {
@@ -42,5 +46,9 @@ public class HEADResponse extends Response {
       out.flush();
       out.close();
     }
+  }
+
+  public static void main(String[] args) {
+    System.out.println("james");
   }
 }

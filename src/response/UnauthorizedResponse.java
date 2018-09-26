@@ -1,9 +1,9 @@
 
-package response;
+package src.response;
 
-import resource.*;
-import request.*;
-import configuration.*;
+import src.resource.*;
+import src.request.*;
+import src.configuration.*;
 import java.util.Date;
 import java.net.Socket;
 import java.net.ServerSocket;
@@ -13,17 +13,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 
-public class BadRequestResponse extends Response {
+public class UnauthorizedResponse extends Response {
 
-  public BadRequestResponse(Resource resource) throws IOException {
+  public UnauthorizedResponse(Resource resource) throws IOException {
     this.resource = resource;
     this.request = resource.getRequest();
-    this.statusCode = 400;
-    this.reasonPhrase = "BAD REQUEST";
+    this.statusCode = 401;
+    this.reasonPhrase = "Unauthorized";
   }
 
   public void send(OutputStream out) throws IOException {
-    out.write(this.get400ResponseHeaders());
+    out.write(this.get401ResponseHeaders());
     out.flush();
     out.close();
   }

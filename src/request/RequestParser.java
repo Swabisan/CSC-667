@@ -1,5 +1,5 @@
 
-package request;
+package src.request;
 
 import java.net.Socket;
 import java.io.IOException;
