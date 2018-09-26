@@ -15,6 +15,14 @@ import java.nio.file.Files;
 
 public class UnauthorizedResponse extends Response {
 
+  public UnauthorizedResponse(Resource resource) throws IOException {
+    this.resource = resource;
+    this.request = resource.getRequest();
+    this.absolutePath = resource.absolutePath();
+    this.statusCode = 401;
+    this.reasonPhrase = "Unauthorized";
+  }
+
   public void send(OutputStream out) throws IOException {
     System.out.println(this.get401ResponseHeaders());
     out.write(this.get401ResponseHeaders());

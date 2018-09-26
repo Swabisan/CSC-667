@@ -15,6 +15,13 @@ import java.nio.file.Files;
 
 public class BadRequestResponse extends Response {
 
+  public UnauthorizedResponse(Resource resource) throws IOException {
+    this.resource = resource;
+    this.request = resource.getRequest();
+    this.statusCode = 400;
+    this.reasonPhrase = "BAD REQUEST";
+  }
+
   public void send(OutputStream out) throws IOException {
     out.write(this.get400ResponseHeaders());
     out.flush();
