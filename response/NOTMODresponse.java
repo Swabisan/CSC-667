@@ -13,17 +13,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
 
-public class UnauthorizedResponse extends Response {
+public class NOTMODresponse extends Response {
 
-  public UnauthorizedResponse(Resource resource) throws IOException {
+  public NOTMODresponse(Resource resource) throws IOException {
     this.resource = resource;
     this.request = resource.getRequest();
-    this.statusCode = 401;
-    this.reasonPhrase = "Unauthorized";
+    this.statusCode = 304;
+    this.reasonPhrase = "Not Modified";
   }
 
   public void send(OutputStream out) throws IOException {
-    out.write(this.get401ResponseHeaders());
+    out.write(this.get304ResponseHeaders());
     out.flush();
     out.close();
   }

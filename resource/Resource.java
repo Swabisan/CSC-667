@@ -15,7 +15,6 @@ import configuration.*;
 public class Resource {
 
   ConfigurationReader configFactory = new ConfigurationReader();
-  Config httpdConfig = configFactory.getConfig(HTTPD_CONF);
   public static String uri;
 
   private static String HTTPD_CONF   = "HTTPD_CONF";
@@ -25,12 +24,14 @@ public class Resource {
   private static String abSCRIPTED   = "/ab/";
   private static String TRACIELY     = "/~traciely/";
   private static String SCRIPTAlias  = "/cgi-bin/";
-  private static String sAlias       = "SCRIPT_ALIAS";
   private static Request request;
+
+  public Config httpdConfig = configFactory.getConfig(HTTPD_CONF);
 
   public Resource(Request request) throws IOException {
     this.request = request;
     this.uri = this.request.getIdentifier();
+    System.out.println(this.httpdConfig.getMap());
   }
 
   public String absolutePath() {
@@ -38,6 +39,13 @@ public class Resource {
 
       if(this.uri.equals(abSCRIPTED)) {
         return this.httpdConfig.lookUp(this.uri, ALIAS).concat("index.html");
+      }
+
+      if(this.uri.equals(SCRIPTAlias)) {
+        return this.httpdConfig.lookUp(this.uri, "SCRIPT_ALIAS").concat("perl_env");
+      }
+      if(this.uri.equals(TRACIELY)) {
+        return this.httpdConfig.lookUp(this.uri, "ALIAS").concat("index.html");
       }
       //handle TRACIELY scripted
     }
@@ -49,16 +57,6 @@ public class Resource {
 
     return this.httpdConfig.lookUp(DOCUMENTROOT, HTTPD_CONF)
       .concat(this.trimedUri());
-  }
-
-  public Process test() throws IOException {
-    if(this.uri.equals(SCRIPTAlias)) {
-      Process test = Runtime.getRuntime().exec(
-      this.httpdConfig.lookUp(this.uri, sAlias).concat("perl_env"));
-
-      return test;
-    }
-    return null;
   }
 
   private Boolean isScripted() {
@@ -108,5 +106,4 @@ public class Resource {
 
     return dateTime;
   }
-
 }

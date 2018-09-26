@@ -37,7 +37,6 @@ public class GETResponse extends Response {
   //Get sends file content
 
   public void send(OutputStream out) throws IOException {
-
     if(this.validFile()) {
       out.write(this.getResponseHeaders());
       out.write(this.getResource());

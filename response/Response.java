@@ -62,6 +62,34 @@ public abstract class Response {
 
     return headersBytes;
   }
+  public byte[] get304ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode = 304);
+    headers.append(" ");
+    headers.append(this.reasonPhrase = "OK");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 304 Not Modified");
+    headers.append("\n");
+    headers.append("Content-Type: " + this.getContenType());
+    headers.append("\n");
+    headers.append("Content-Location: " + this.resource.uri);
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headersBytes = headers.toString().getBytes();
+
+    return headersBytes;
+  }
+
 
   public byte[] get404ResponseHeaders() throws IOException {
     StringBuilder headers = new StringBuilder();
