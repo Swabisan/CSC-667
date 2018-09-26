@@ -88,6 +88,33 @@ public abstract class Response {
 
     return headersBytes;
   }
+
+
+  public byte[] get403ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode = 403);
+    headers.append(" ");
+    headers.append("Not Found");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 403 Forbidden");
+    headers.append("\n");
+    headers.append("Content-Type: " + this.getContenType());
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headersBytes = headers.toString().getBytes();
+
+    return headersBytes;
+  }
   public byte[] get400ResponseHeaders() throws IOException {
     StringBuilder headers = new StringBuilder();
     Date localDate = new Date();
