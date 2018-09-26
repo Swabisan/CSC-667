@@ -18,7 +18,6 @@ public class UnauthorizedResponse extends Response {
   public UnauthorizedResponse(Resource resource) throws IOException {
     this.resource = resource;
     this.request = resource.getRequest();
-    this.absolutePath = resource.absolutePath();
     this.statusCode = 401;
     this.reasonPhrase = "Unauthorized";
   }

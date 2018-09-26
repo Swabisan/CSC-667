@@ -15,12 +15,20 @@ public class Worker implements Runnable {
   private Socket clientSocket;
   private Logger logger;
 
+  private ResponseFactory responseFactory = new ResponseFactory();
+  private Request request;
+  private Resource resource;
+  private Response response;
+  private String username;
+
   public Worker(Socket clientSocket) {
     this.clientSocket = clientSocket;
     this.logger = new Logger();
   }
 
   public void run() {
+    clearFields();
+
     try {
       talkToClient();
 
@@ -30,47 +38,55 @@ public class Worker implements Runnable {
   }
 
   private void talkToClient() throws IOException {
-    ResponseFactory responseFactory = new ResponseFactory();
-    Request httpRequest = new Request(clientSocket);
-    Resource resource = new Resource(httpRequest);
-    String username = "PUBLIC_USER";
+    request = new Request(clientSocket);
+    resource = new Resource(request);
 
-    if (httpRequest.isBadRequest()) {
-      Response response = new BadRequestResponse();
-      response.send(clientSocket.getOutputStream());
-      logger.log(httpRequest, response, username);
-      closeConnection();
+    if (request.isBadRequest()) {
+      response = new BadRequestResponse(resource);
+      this.sendResponse(response);
       return;
     }
 
-    if (httpRequest.isPopulated()) {
+    if (request.isPopulated()) {
 
       if (resource.isProtected()) {
-        String authToken = httpRequest.getHeader("Authorization");
+        String authInfo = request.getHeader("Authorization");
+        System.out.println(authInfo);
 
-        if (authToken != "KEY_NOT_FOUND") {
-          AccessCheck accessCheck = new AccessCheck(resource.getHtaccessPath());
-          username = accessCheck.getUsername(authToken);
+        if (authInfo != "KEY_NOT_FOUND") {
+          String accessPath = resource.getHtaccessPath();
+          AccessCheck accessCheck = new AccessCheck(accessPath);
 
-          if (!accessCheck.isAuthorized(authToken)) {
+          username = accessCheck.getUsername(authInfo);
+
+          if (!accessCheck.isAuthorized(authInfo)) {
+            System.out.println("wrong password");
+
             // 403
           }
 
         } else {
-          Response response = new UnauthorizedResponse();
-          response.send(clientSocket.getOutputStream());
-          logger.log(httpRequest, response, username);
-          closeConnection();
+          response = new UnauthorizedResponse(resource);
+          this.sendResponse(response);
           return;
         }
       }
 
-      Response response = responseFactory.getResponse(resource);
-      response.send(clientSocket.getOutputStream());
-
-      logger.log(httpRequest, response, username);
+      response = responseFactory.getResponse(resource);
+      this.sendResponse(response);
     }
+  }
 
+  private void clearFields() {
+    this.request  = null;
+    this.resource = null;
+    this.response = null;
+    this.username = "UNKNOWN_USER";
+  }
+
+  private void sendResponse(Response response) throws IOException {
+    response.send(clientSocket.getOutputStream());
+    logger.log(request, response, username);
     closeConnection();
   }
 
