@@ -13,8 +13,6 @@ public class ConfigurationReader {
         return new HttpdConf("conf/httpd.conf");
       case "MIME_TYPE":
         return new MimeTypes("conf/mime.types");
-      case "HTACCESS":
-        return new Htaccess("conf/.htaccess");
       default:
         return null;
     }
