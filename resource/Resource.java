@@ -46,14 +46,6 @@ public class Resource {
       .concat(this.trimedUri());
   }
 
-  public Process test() throws IOException {
-    if(this.uri.equals(SCRIPTAlias)) {
-      Process test = Runtime.getRuntime().exec(this.httpdConfig.lookUp(this.uri, sAlias).concat("perl_env"));
-      return test;
-    }
-    return null;
-  }
-
   private Boolean isScripted() {
     return this.uri.equals(abSCRIPTED) || this.uri.equals(TRACIELY) || this.uri.equals(SCRIPTAlias);
   }
@@ -73,9 +65,5 @@ public class Resource {
 
   public Request getRequest() throws IOException {
     return this.request;
-  }
-
-  public static void main(String[] args) {
-    
   }
 }

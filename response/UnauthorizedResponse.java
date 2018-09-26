@@ -23,7 +23,6 @@ public class UnauthorizedResponse extends Response {
   }
 
   public void send(OutputStream out) throws IOException {
-    System.out.println(this.get401ResponseHeaders());
     out.write(this.get401ResponseHeaders());
     out.flush();
     out.close();
