@@ -21,6 +21,8 @@ public class Resource {
   private static String PROTECTED    = ".htaccess";
   private static String abSCRIPTED   = "/ab/";
   private static String TRACIELY     = "/~traciely/";
+  private static String SCRIPTAlias  = "/cgi-bin/";
+  private static String sAlias       = "SCRIPT_ALIAS";
   private static Request request;
 
   public Resource(Request request) throws IOException {
@@ -30,6 +32,7 @@ public class Resource {
 
   public String absolutePath() {
     if(this.isScripted()) {
+
       if(this.uri.equals(abSCRIPTED)) {
         return this.httpdConfig.lookUp(this.uri, ALIAS).concat("index.html");
       }
@@ -45,8 +48,16 @@ public class Resource {
       .concat(this.trimedUri());
   }
 
+  public Process test() throws IOException {
+    if(this.uri.equals(SCRIPTAlias)) {
+      Process test = Runtime.getRuntime().exec(this.httpdConfig.lookUp(this.uri, sAlias).concat("perl_env"));
+      return test;
+    }
+    return null;
+  }
+
   private Boolean isScripted() {
-    return this.uri.equals(abSCRIPTED) || this.uri.equals(TRACIELY);
+    return this.uri.equals(abSCRIPTED) || this.uri.equals(TRACIELY) || this.uri.equals(SCRIPTAlias);
   }
 
   public Boolean isProtected() {
@@ -81,5 +92,7 @@ public class Resource {
     }
 
     return path;
+
   }
+  
 }

@@ -30,6 +30,7 @@ public class Worker implements Runnable {
   }
 
   private void talkToClient() throws IOException {
+    ResponseFactory responseFactory = new ResponseFactory();
     Request httpRequest = new Request(clientSocket);
     Resource resource = new Resource(httpRequest);
     String username = "PUBLIC_USER";
@@ -64,10 +65,9 @@ public class Worker implements Runnable {
         }
       }
 
-      ResponseFactory responseFactory = new ResponseFactory();
       Response response = responseFactory.getResponse(resource);
-
       response.send(clientSocket.getOutputStream());
+
       logger.log(httpRequest, response, username);
     }
 
