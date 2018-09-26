@@ -31,14 +31,18 @@ public class Worker implements Runnable {
 
   private void talkToClient() throws IOException {
     Request httpRequest = new Request(clientSocket);
+    Resource resource = new Resource(httpRequest);
+    String username = "PUBLIC_USER";
 
     if (httpRequest.isBadRequest()) {
-
+      Response response = new BadRequestResponse();
+      response.send(clientSocket.getOutputStream());
+      logger.log(httpRequest, response, username);
+      closeConnection();
+      return;
     }
 
     if (httpRequest.isPopulated()) {
-      Resource resource = new Resource(httpRequest);
-      String username = "PUBLIC_USER";
 
       if (resource.isProtected()) {
         String authToken = httpRequest.getHeader("Authorization");
@@ -52,8 +56,11 @@ public class Worker implements Runnable {
           }
 
         } else {
-          System.out.println("401 BADD");
-          // 401
+          Response response = new UnauthorizedResponse();
+          response.send(clientSocket.getOutputStream());
+          logger.log(httpRequest, response, username);
+          closeConnection();
+          return;
         }
       }
 
