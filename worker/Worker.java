@@ -44,7 +44,7 @@ public class Worker implements Runnable {
         String authToken = httpRequest.getHeader("Authorization");
 
         if (authToken != "KEY_NOT_FOUND") {
-          AccessCheck accessCheck = new AccessCheck();
+          AccessCheck accessCheck = new AccessCheck(resource.getHtaccessPath());
           username = accessCheck.getUsername(authToken);
 
           if (!accessCheck.isAuthorized(authToken)) {
@@ -52,6 +52,7 @@ public class Worker implements Runnable {
           }
 
         } else {
+          System.out.println("401 BADD");
           // 401
         }
       }

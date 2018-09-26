@@ -1,0 +1,4 @@
+AuthUserFile "C://Dev/667/web-server-fire-squad/conf/.htpasswd"
+AuthType Basic
+AuthName "I Challenge You"
+Require valid-user

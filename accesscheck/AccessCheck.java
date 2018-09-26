@@ -9,21 +9,20 @@ import configuration.*;
 
 public class AccessCheck {
 
-  ConfigurationReader configReader = new ConfigurationReader();
   Config htpasswd, htaccess;
 
-  public AccessCheck() {
-    this.htaccess = configReader.getConfig("HTACCESS");
+  public AccessCheck(String htaccessPath) {
+    this.htaccess = new Htaccess(htaccessPath);
 
-    String htpasswdFilePath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
-    this.htpasswd = new Htpasswd(htpasswdFilePath);
+    String htpasswdPath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
+    this.htpasswd = new Htpasswd(htpasswdPath);
   }
 
   private AccessCheck(int AccessCheck_Test) {
-    this.htpasswd = configReader.getConfig("AUTH_HTPASSWD");
+    this.htaccess = new Htaccess("C://Dev/667/web-server-fire-squad/public_html/protected/.htaccess");
 
-    String htpasswdFilePath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
-    this.htpasswd = new Htpasswd(htpasswdFilePath);
+    String htpasswdPath = this.htaccess.lookUp("AuthUserFile", "HTACCESS");
+    this.htpasswd = new Htpasswd(htpasswdPath);
 
     this.testAccesCheck();
   }
