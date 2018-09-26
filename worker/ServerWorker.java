@@ -48,7 +48,7 @@ public class ServerWorker implements Runnable {
 
     while(true) {
       clientSocket = serverSocket.accept();
-      // printConnectionEstablished();
+      // printConnectionEstablished(clientSocket.getInetAddress().toString());
 
       threadPool.execute(new Worker(clientSocket));
     }
@@ -58,9 +58,10 @@ public class ServerWorker implements Runnable {
     runningThread = Thread.currentThread();
   }
 
-  private void printConnectionEstablished() {
+  private void printConnectionEstablished(String inetAddress) {
     final String HR = "-----------------";
     System.out.printf("%17s%20s%5s%17s\n", HR, "Creating Connection", "(" + connectionCount + ")", HR);
+    System.out.println("(" + connectionCount + ") Request received from " + inetAddress);
     connectionCount++;
   }
 

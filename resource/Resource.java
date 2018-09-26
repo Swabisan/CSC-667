@@ -1,6 +1,8 @@
 
 package resource;
 
+import java.io.File;
+
 import java.net.*;
 import java.io.*;
 import request.*;
@@ -59,8 +61,14 @@ public class Resource {
   }
 
   public Boolean isProtected() {
-    //Still need to access file working.
-    return this.uri == PROTECTED;
+    String htaccessPath = this.getHtaccessPath();
+    File accessFile = new File(htaccessPath);
+
+    if (accessFile.exists()) {
+      return true;
+    }
+    
+    return false;
   }
 
   public String getUri() {
@@ -75,7 +83,17 @@ public class Resource {
     return this.request;
   }
 
-  public static void main(String[] args) {
-    
+  public String getHtaccessPath() {
+    String path = this.absolutePath();
+    String[] tokens = path.split("/");
+
+    if (tokens.length > 0) {
+      String lastToken = tokens[tokens.length - 1];
+      return path.replace(lastToken, ".htaccess");
+    }
+
+    return path;
+
   }
+
 }
