@@ -31,7 +31,6 @@ public class Resource {
   public Resource(Request request) throws IOException {
     this.request = request;
     this.uri = this.request.getIdentifier();
-    System.out.println(this.httpdConfig.getMap());
   }
 
   public String absolutePath() {

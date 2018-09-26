@@ -85,7 +85,9 @@ public class Worker implements Runnable {
         LocalDateTime lastModified = resource.getLastModified().toLocalDateTime();
         LocalDateTime imsDateTime = this.parseIMS(ims).toLocalDateTime();
         if (imsDateTime.isAfter(lastModified)) {
-          System.out.println("SERVE 304");
+          response = new NOTMODresponse(resource);
+          this.sendResponse(response);
+          return;
         }
       }
 

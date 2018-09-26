@@ -79,8 +79,6 @@ public abstract class Response {
     headers.append("\n");
     headers.append("Status: 304 Not Modified");
     headers.append("\n");
-    headers.append("Content-Type: " + this.getContenType());
-    headers.append("\n");
     headers.append("Content-Location: " + this.resource.uri);
     headers.append("\n");
     headers.append("\n");
