@@ -23,7 +23,7 @@ public class Request {
     RequestParser requestParser = new RequestParser(client, this);
     requestParser.parseHttpRequest();
 
-    printDataFields();
+    // printDataFields();
   }
 
   private void printDataFields() {

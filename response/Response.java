@@ -107,8 +107,6 @@ public abstract class Response {
     headers.append("\n");
     headers.append("Status: 403 Forbidden");
     headers.append("\n");
-    headers.append("Content-Type: " + this.getContenType());
-    headers.append("\n");
     headers.append("\n");
 
     byte[] headersBytes = headers.toString().getBytes();

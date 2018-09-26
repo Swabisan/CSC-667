@@ -51,7 +51,6 @@ public class Worker implements Runnable {
 
       if (resource.isProtected()) {
         String authInfo = request.getHeader("Authorization");
-        System.out.println(authInfo);
 
         if (authInfo != "KEY_NOT_FOUND") {
           String accessPath = resource.getHtaccessPath();
@@ -60,9 +59,9 @@ public class Worker implements Runnable {
           username = accessCheck.getUsername(authInfo);
 
           if (!accessCheck.isAuthorized(authInfo)) {
-            System.out.println("wrong password");
-
-            // 403
+            response = new ForbiddenResponse(resource);
+            this.sendResponse(response);
+            return;
           }
 
         } else {

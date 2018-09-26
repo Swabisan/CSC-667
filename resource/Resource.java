@@ -63,10 +63,11 @@ public class Resource {
   public Boolean isProtected() {
     String htaccessPath = this.getHtaccessPath();
     File accessFile = new File(htaccessPath);
-    System.out.println(htaccessPath);
+
     if (accessFile.exists()) {
       return true;
     }
+    
     return false;
   }
 
@@ -94,5 +95,5 @@ public class Resource {
     return path;
 
   }
-  
+
 }
