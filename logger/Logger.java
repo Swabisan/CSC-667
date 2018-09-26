@@ -31,7 +31,6 @@ public class Logger {
       FileWriter fileWriter = new FileWriter(this.logFile, true);
       PrintWriter printWriter = new PrintWriter(fileWriter);
 
-      // Common_Log_Format: IP identifier user [date:time tz] verb uri version status size
       printWriter.printf("%s %s %s [%s] %s %s %s %s %s\n",
         request.getInetAddress(), "-", username,
         this.getDateTime(ZonedDateTime.now()),
