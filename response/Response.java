@@ -88,6 +88,54 @@ public abstract class Response {
 
     return headersBytes;
   }
+  public byte[] get400ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode = 400);
+    headers.append(" ");
+    headers.append("BAD REQUEST");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 400 BAD REQUEST");
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headersBytes = headers.toString().getBytes();
+
+    return headersBytes;
+  }
+  public byte[] get401ResponseHeaders() throws IOException {
+    StringBuilder headers = new StringBuilder();
+    Date localDate = new Date();
+
+    headers.append(this.request.getVersion());
+    headers.append(" ");
+    headers.append(this.statusCode = 401);
+    headers.append(" ");
+    headers.append("Unauthorized");
+    headers.append("\n");
+    headers.append("Date: ");
+    headers.append(localDate);
+    headers.append("\n");
+    headers.append("Server: FireSquad/1.0");
+    headers.append("\n");
+    headers.append("Status: 401 Unauthorized");
+    headers.append("\n");
+    headers.append("WWW-Authenticate: Basic realm=Need Auth");
+    headers.append("\n");
+    headers.append("\n");
+
+    byte[] headersBytes = headers.toString().getBytes();
+
+    return headersBytes;
+  }
 
   public byte[] get201ResponseHeaders() throws IOException {
     StringBuilder headers = new StringBuilder();
