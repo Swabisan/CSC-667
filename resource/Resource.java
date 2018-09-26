@@ -2,6 +2,10 @@
 package resource;
 
 import java.io.File;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.Instant;
+import java.time.format.TextStyle;
 
 import java.net.*;
 import java.io.*;
@@ -13,7 +17,6 @@ public class Resource {
   ConfigurationReader configFactory = new ConfigurationReader();
   public static String uri;
 
-  //Might have to read from config file directly.  Might also say.
   private static String HTTPD_CONF   = "HTTPD_CONF";
   private static String ALIAS        = "ALIAS";
   private static String DOCUMENTROOT = "DocumentRoot";
@@ -57,7 +60,8 @@ public class Resource {
   }
 
   private Boolean isScripted() {
-    return this.uri.equals(abSCRIPTED) || this.uri.equals(TRACIELY) || this.uri.equals(SCRIPTAlias);
+    return this.uri.equals(
+      abSCRIPTED) || this.uri.equals(TRACIELY) || this.uri.equals(SCRIPTAlias);
   }
 
   public Boolean isProtected() {
@@ -93,6 +97,13 @@ public class Resource {
     }
 
     return path;
+  }
 
+  public ZonedDateTime getLastModified() {
+    File file = new File(this.absolutePath());
+    ZonedDateTime dateTime = Instant.ofEpochMilli(file.lastModified())
+      .atZone(ZoneId.of(ZonedDateTime.now().getOffset().toString()));
+
+    return dateTime;
   }
 }
